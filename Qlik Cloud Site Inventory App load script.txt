@@ -1,0 +1,5187 @@
+///$tab **About**
+/*
+===========================================================================
+Created by:     Gerardo Tiscareno
+Organization:   Copyright 2026 QlikTech International AB
+Filename:       Qlik Cloud Site Inventory App
+===========================================================================
+DESCRIPTION
+
+DISCLAIMER:
+
+    Version 1.1 - Initial Release
+        Future topics:
+            - [List planned topics here]
+
+    Version 1.2
+        Utilizes two (2) REST Connectors with the following parameters:
+            - Connector name: REST_with_Pagination
+              URL: 'https://{tenant_fqdn}/api/v1/apps'
+              Pagination Type: NEXT URL
+              Next URL PATH: links/next/href
+            - Connector name: monitoring_apps_REST (Default REST Connection of Qlik Cloud monitoring apps)
+        Future topics:
+            - Add more detailed sheets for several segments.
+
+    Version 1.3 - Added New Data
+        - Added report templates and groups.
+        - Changed the navigation format.
+        - Created an on-demand report for Customer Deployment.
+        Future topics:
+            - Add more detailed sheets for several segments.
+            - Summarize totals for the On-Demand Report.
+            - Complete the "About" sheet.
+
+    Version 1.4 - Updated Tenant URL
+        - Changed variables to retrieve tenant information.
+        - Completed the "About" sheet.
+        - Added more detailed sheets for several segments.
+        Future topics:
+            - Add more detailed sheet segments.
+
+    Version 1.5 - Updated Apps
+        - Updated the Apps Section:
+            - "Published" field is consistently false (00380357).
+            - Added the Resource type (QView or Qsense-QSaas).
+            - Added a limit to the URL; need to review if this value can be obtained from metadata.
+        - Updated the Space Section:
+            - Linked data to display the owner's name.
+        - Updated all date fields for better formatting.
+        Future topics:
+            - Add more detailed sheet segments.
+            - Add Data Flow and Scripts.
+            - Change the naming in the Data Load Editor Script.
+            - Add the detail section to the On-Demand Report.
+
+    Version 1.6 - Updated Apps
+        - Updated the Data Model and linked tables to owner and space.
+        - Added three new data tables: Data Flow, Notes, and Scripts.
+        - Created a new sheet for licenses.
+        Future topics:
+            - Add more detailed sheet segments.
+            - Add error handling in case a REST API fails.
+            - Add the detail section to the On-Demand Report.
+
+    Version 1.7
+        - Updated the Data Files API call to include all data files.
+        - Added Data Alert, Automation, and DataConnections data.
+        - Added error handling for KB, Assistants, and DI Projects.
+        Future topics:
+            - Add more detailed sheet segments.
+            - Add the detail section to the On-Demand Report.
+            - Remove multiple KPIs from the Dashboard.
+            - Add totals for Data Alert and Auto Data connection to the report.
+
+    Version 1.8
+        - Updated App and Space names in several sections.
+        - Added external links to the Detail sheet.
+        - Added the Subscription Data Load section.
+        - Added totals for Data Alert and Auto Data connection to the report.
+        Future topics:
+            - Add Subscription Data to a detail page.
+            - Add the detail section to the On-Demand Report.
+            - Remove multiple KPIs from the Dashboard.
+            - Add a mechanism to load data if the API has pagination.
+
+    Version 1.9
+        - Updated the loading script and created subroutines.
+        - Removed all sections per table.
+        - Created subroutines, call subroutines, and exit scripts.
+        - Removed multiple KPIs from the Dashboard.
+        Future topics:
+            - Add Subscription Data to a detail page.
+            - Add the detail section to the On-Demand Report.
+            - Add Session Detail Section.
+            - Add DataGateway Section.
+            - Add a mechanism to load data if the API has pagination.
+
+    Version 2.0
+        - Added Session and Exported information to the Audit sheet.
+        
+        Future topics:
+            - Add Subscription Data to a detail page.
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            - Add a mechanism to load data if the API has pagination.
+
+    Version 2.1
+        - Added subscription information.
+        - Modified sheet titles.
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add app size in the app details page
+            - Add Object detail page
+            - Add DataGateway Section.
+            - Add a mechanism to load data if the API has pagination.
+            - Add Details for the Knowedgebases
+
+    Version 2.2
+        - Added Predict Sheet Experiments and Deployments
+        - Added Knowedgebase info (Filecount, effectivePages, textSize, fileSize)
+		- Added Schedule Data 
+        - Added Monitor Chart Data
+		- Added app size in the app details page
+        - Modify how the data is loaded in the next Sections using the next Endpoint /api/v1/items
+        		"app"
+                "qlikview"
+                "qvapp"
+                "genericlink"
+                "sharingservicetask"
+                "note"
+                "dataasset"
+                "dataset"
+                "automation"
+                "automl-experiment"
+                "automl-deployment"
+                "assistant"
+                "dataproduct"
+                "dataqualityrule"
+                "glossary"
+                "knowledgebase"
+                "script"
+
+		Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            - Add a mechanism to load data if the API has pagination.
+
+    Version 2.3
+		- Added IDP Details in the setting sheet
+        - Modified how the data is loaded in the tables
+
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            - Add a mechanism to load data if the API has pagination.
+            
+    Version 2.4
+		- Added Pagination on:
+        	- Datafiles
+            - Users
+            - Spaces
+            - Data Connections
+            - Automation
+            - Applications
+        - Added a KPI for API using DirectQuery
+        - Add a mechanism to load data if the API has pagination.
+
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.           
+            
+    Version 2.5
+        - Added a task reload sheet
+
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            
+    Version 2.6
+		- Added Prepare data sheet
+		- Added a Table Recipe data 
+        - Added more field for the Data-File section
+        - Added the Company Field to print on the report
+        - Added the loading Mode(Complete, Configuration, Test) by Default the reload will be complete.
+        - Added a connection with a pagination
+
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            - Add an automation to load sheet info
+            
+    Version 2.7
+        - Added Banner Info
+        - Added type of license per user
+        - Added Tenant info from the Api pulling more information
+
+        Future topics:
+            - Add the detail section to the On-Demand Report.
+            - Add DataGateway Section.
+            - Add an automation to load sheet info
+            
+
+*/
+///$tab ** Configuration**
+Trace Configuration;
+
+////////////////////////////////////////////////////////////////////////////////////////
+// *Required* Configuration 
+// IMPORTANT: To run this application out side the space where the monitor apps are installed, the user must be a "Tenant Admin" and
+// must have an API Key and APIs to be enabled within the tenant.
+/*
+1. The name of the REST connection that will be used. You must first create a valid REST connection to any endpoint to Qlik Sense tenant.
+		Example Connection: 
+					URL: 			https://<tenant-name>.<region>.qlikcloud.com/api/v1/items
+					Header: 		"Authorization"
+					Header Value: 	"Bearer <token>"
+		For reference on how to connect: 
+					https://qlik.dev/tutorials/generate-your-first-api-key
+                    
+2. Modify the next Variables
+	
+    vRestPaginationConnector is the name of the REST Connection, sintaxsis '<Space>:<Connection Name>'
+    Example: Let vRestPaginationConnector	= 'monitoring_apps_REST';  
+    		Note: ':<Connection Name>' is the relative path which will check for a connection in the current space.
+    
+    vu_tenant_fqdn is the customer Tenant URL
+    Example: let vu_tenant_fqdn = 'm8v7xge20rzvaph.us.qlikcloud.com';
+    
+	VloadMode this is the load mode, there are 3 modes ( 'Complete','Configuration','Test' )  Complete will load all items, in Configuration 
+    only the tenant setting will be loaded, and finally there is a Test mode just validated that theda is being laoded
+    Example: let VloadMode 	= 'Complete';
+    		 let VloadMode 	= 'Configuration';
+             let VloadMode 	= 'Test';
+    
+	vInternal this value will hide or show sensitive data (emails, user name, app name's, etc) 1 is to Hide and 0 to show all valies.
+    Example: let vInternal =  1;
+    
+	VCustomerName This value is to have a value in the on-demand Report
+    Example: let VCustomerName	= 'Qlik International';
+
+*/
+
+Let vRestPaginationConnector	= 'monitoring_apps_REST'; 
+
+let vu_tenant_fqdn 				= 'm8v7xge20rzvaph.us.qlikcloud.com';
+let VloadMode 					= 'Complete';
+let vInternal	 				=  1;
+let VCustomerName				= 'Tiscareno';
+
+let vExport		 				=  0;
+let VSharepointFolder			= 'na-cse.us.qlikcloud.com';
+// Set Config Variables
+Set ErrorMode					= 0;
+Set vSearchByCharacters			= 1;
+Set vSearchCharacters           = 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ')';
+SET ThousandSep					=',';
+SET DecimalSep					='.';
+SET MoneyThousandSep			=',';
+SET MoneyDecimalSep				='.';
+SET MoneyFormat					='$ ###0.00;-$ ###0.00';
+SET TimeFormat					='h:mm:ss TT';
+SET DateFormat					='M/D/YYYY';
+SET TimestampFormat				='M/D/YYYY h:mm:ss[.fff] TT';
+SET FirstWeekDay				=6;
+SET BrokenWeeks					=1;
+SET ReferenceDay				=0;
+SET FirstMonthOfYear			=1;
+SET CollationLocale				='en-US';
+SET CreateSearchIndexOnReload	=1;
+SET MonthNames					='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames				='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames					='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames				='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation		='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+SET vClearVar					=1;
+///$tab Config SubRutines
+/********************************************************************************************
+***** The Next sub rutine will recored and will also 
+***** show the time to each subrutine will be 
+********************************************************************************************/
+
+Sub Exe_sub(sub_routine)
+    Trace The routine $(sub_routine) just started;
+    Let sub_start = Num(Now(1));
+    Call $(sub_routine)
+    Let sub_finish = Num(Now(1));
+    Let sub_duration = Num(Round((sub_finish-sub_start)*86400),'#,##0');
+    Trace The rutine $(sub_routine) completed, Time:$(sub_duration) seconds.;
+End Sub
+
+
+Sub loadUsers
+/********************************************
+***  SubRutine to load Users MetaData
+***
+********************************************/
+	SET vParams = 'limit=100';
+    
+  	Do
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id" AS "id_u2",
+                "tenantId",
+                "status",
+                "subject",
+                "name" AS "name_u2",
+                "email",
+                "createdAt",
+                "lastUpdatedAt",
+                "created",
+                "lastUpdated",
+                "__KEY_data",
+                "__FK_data",
+                (SELECT 
+                    "@Value",
+                    "__FK_roles"
+                FROM "roles" FK "__FK_roles" ArrayValueAlias "@Value"),
+                (SELECT 
+                    "id",
+                    "name",
+                    "type",
+                    "level",
+                    "__FK_assignedRoles"
+                FROM "assignedRoles" FK "__FK_assignedRoles"),
+                (SELECT 
+                    "id" AS "id_u1",
+                    "name" AS "name_u1",
+                    "providerType",
+                    "__KEY_assignedGroups",
+                    "__FK_assignedGroups",
+                    (SELECT 
+                        "id" AS "id_u0",
+                        "name" AS "name_u0",
+                        "type" AS "type_u0",
+                        "level" AS "level_u0",
+                        "__FK_assignedRoles_u0"
+                    FROM "assignedRoles" FK "__FK_assignedRoles_u0")
+                FROM "assignedGroups" PK "__KEY_assignedGroups" FK "__FK_assignedGroups"),
+                (SELECT 
+                    "__KEY_links",
+                    "__FK_links",
+                    (SELECT 
+                        "href",
+                        "__FK_self"
+                    FROM "self" FK "__FK_self")
+                FROM "links" PK "__KEY_links" FK "__FK_links")
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                "__KEY_links_u0",
+                "__FK_links_u0",
+                (SELECT 
+                    "href" AS "href_u0",
+                    "__FK_self_u0"
+                FROM "self" FK "__FK_self_u0"),
+                (SELECT 
+                    "href" AS "href_u1",
+                    "__FK_next"
+                FROM "next" FK "__FK_next")
+            FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/users?$(vParams)" );
+
+        [tmp_Usr_Roles]:
+        LOAD	
+            [@Value] as 'Role',
+            [id_u1] as 'Role_id',
+            [__FK_roles] as 'Usr_KeyData'
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_roles]);
+
+        [tmp_Usr_Groups]:
+        LOAD	
+            [id_u1] AS [id_u1],
+            [name_u1] AS 'Group',
+            //[providerType] ,
+            [__FK_assignedGroups] as 'Usr_KeyData'
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_assignedGroups]);
+
+        [tmp_Users]:
+        LOAD Distinct
+            "id_u2" AS 'id',
+            "tenantId",
+            "status",
+            "subject",
+            "name_u2"  AS 'name',
+            "email" ,
+            "createdAt",
+            "lastUpdatedAt",
+            "created" ,
+            "lastUpdated"
+            //,[__KEY_data] 
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]);
+       
+        [NextURL]:
+        LOAD	[href_u1] AS [NextURL],
+            [__FK_next] AS [__KEY_links_u0]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_next]);
+        
+        Drop Table RestConnectorMasterTable;
+        
+        trace $(vParams);
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        
+        trace Parameters $(vParams);
+        trace Rows  $(vNextURLRows);
+        
+        Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>0;  
+    
+    QUALIFY *; // Qualifies all fields in subsequent loads
+   
+   	[Users]:
+   	LOAD *
+    ,ApplyMap('All_Usr', subject, 'Unknown') as License_Type
+    RESIDENT tmp_Users;
+   
+   	[Usr_Roles]:
+   	LOAD * RESIDENT tmp_Usr_Roles;
+   
+   	[Usr_Groups]:
+   	LOAD * RESIDENT tmp_Usr_Groups;
+   
+   	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [Users_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(createdAt) as MaxValue,
+        MIN(createdAt) as MinValue
+    RESIDENT tmp_Users;
+    
+    Let vTotUsr = TEXT(Peek('CountValue',0,'Users_stat'));
+    Let VMinUserCreated = TEXT(Date(Peek('MinValue',0,'Users_stat'),'DD-MMM-YYYY'));
+    Let VMaxUserCreated = TEXT(Date(Peek('MaxValue',0,'Users_stat'),'DD-MMM-YYYY'));
+
+     [Map_Users]:
+     LOAD
+         id as ownerId,
+         name as User_Name
+     RESIDENT tmp_Users;
+    
+    Trace 'Dropping Temp Tables';
+   	Drop Table tmp_Users;
+   	Drop Table tmp_Usr_Roles;
+   	Drop Table tmp_Usr_Groups;
+    Drop Table Users_stat;
+
+End Sub
+
+Sub loadSpaces
+/********************************************
+***  SubRutine to load Spaces MetaData
+***
+********************************************/
+
+    SET vParams = 'limit=100';
+    Do
+
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id",
+                "type",
+                "ownerId",
+                "tenantId",
+                "name",
+                "description",
+                "createdAt",
+                "createdBy",
+                "updatedAt",
+                "__KEY_data",
+                "__FK_data"
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                  "__KEY_links",
+                  "__FK_links",
+                  (SELECT 
+                      "href",
+                      "__FK_next"
+                  FROM "next" FK "__FK_next"),
+                  (SELECT 
+                      "href" AS "href_u0",
+                      "__FK_self"
+                  FROM "self" FK "__FK_self"),
+                  (SELECT 
+                      "__FK_prev"
+                  FROM "prev" FK "__FK_prev")
+              FROM "links" PK "__KEY_links" FK "__FK_links")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/spaces?$(vParams)" );
+
+        [tmp_Spaces]:
+        LOAD	
+            [id],
+            [type],
+            [ownerId],
+            [tenantId],
+            [name],
+            [description],
+            [createdAt],
+            [createdBy],
+            [updatedAt]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]);
+
+        NextURL:
+        Load	
+        [href_u0] AS NextURL
+        Resident RestConnectorMasterTable
+        Where not IsNull([__FK_next]);
+
+        Drop Table RestConnectorMasterTable;
+
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>0;  
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [Spaces]:
+    LOAD 
+      [id],
+      [type],
+      [ownerId],
+      [tenantId],
+      [name],
+      [description],
+      [createdAt],
+      [createdBy],
+      [updatedAt]
+	  ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT tmp_Spaces;
+
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+    [Spaces_stat]:
+   	LOAD 
+        Count(id) as CountValue,
+        MAX(createdAt) as MaxValue,
+        MIN(createdAt) as MinValue
+    RESIDENT tmp_Spaces;
+    
+    Let TotSpc = TEXT(Peek('CountValue',0,'Spaces_stat'));
+    Let VMinSpacesCreated = TEXT(Date(Peek('MinValue',0,'Spaces_stat'),'DD-MMM-YYYY'));
+    Let VMaxSpacesCreated = TEXT(Date(Peek('MaxValue',0,'Spaces_stat'),'DD-MMM-YYYY'));
+    
+    [Map_Spaces]:
+    LOAD
+        id as spaceId,
+        name as Space_Name
+    RESIDENT tmp_Spaces;
+
+	Trace 'Dropping Temp Tables';
+    Drop Table Spaces_stat;
+    Drop Table tmp_Spaces;   
+	Trace Completed with Spaces MetaData;	
+
+End Sub
+
+
+Sub LoadTenant
+/********************************************
+***  SubRutine to load Tenant Info
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "__KEY_links",
+            "__FK_links",
+            (SELECT 
+                "href",
+                "__FK_self"
+            FROM "self" FK "__FK_self")
+        FROM "links" PK "__KEY_links" FK "__FK_links"),
+        (SELECT 
+            "id",
+            "name",
+            "createdByUser",
+            "datacenter",
+            "created",
+            "lastUpdated",
+            "status",
+            "autoAssignCreateSharedSpacesRoleToProfessionals",
+            "autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals",
+            "autoAssignDataServicesContributorRoleToProfessionals",
+            "enableAnalyticCreation",
+            "region",
+            "enableAppOpeningFeedback",
+            "__KEY_data",
+            "__FK_data",
+            (SELECT 
+                "@Value",
+                "__FK_hostnames"
+            FROM "hostnames" FK "__FK_hostnames" ArrayValueAlias "@Value"),
+            (SELECT 
+                "__KEY_links_u0",
+                "__FK_links_u0",
+                (SELECT 
+                    "href" AS "href_u0",
+                    "__FK_self_u0"
+                FROM "self" FK "__FK_self_u0")
+            FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/tenants" );
+
+    QUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [TenantInfo]:
+    LOAD	[id],
+        [name],
+        [createdByUser],
+        [datacenter],
+        [created],
+        [lastUpdated],
+        [status],
+        [autoAssignCreateSharedSpacesRoleToProfessionals],
+        [autoAssignPrivateAnalyticsContentCreatorRoleToProfessionals],
+        [autoAssignDataServicesContributorRoleToProfessionals],
+        [enableAnalyticCreation],
+        [region],
+        [enableAppOpeningFeedback]
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data]);
+
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    DROP TABLE RestConnectorMasterTable;
+       
+    Let vu_tenantR_region = TEXT(Peek('TenantInfo.datacenter',0,'TenantInfo'));
+    Let vtenantname = TEXT(Peek('TenantInfo.name',0,'TenantInfo'));
+   	Let vtenantstatus = TEXT(Peek('TenantInfo.status',0,'TenantInfo'));
+
+End Sub
+
+Sub loadDIProject
+/********************************************
+***  SubRutine to load Data Integration Project MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "id",
+        "name",
+        "description",
+        "ownerId",
+        "spaceId"
+    FROM JSON (wrap on) "root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/di-Projects" );
+	
+    QUALIFY *; // Qualifies all fields in subsequent loads\
+    
+    if ScriptErrorcount > 0 then
+
+        [DIP]:
+        LOAD * Inline ['id', 'name', 'description','OwnerID','SpaceID','Space_Name','User_Name'];
+
+		Let vScriptErrors = ScriptErrorCount & '|' & num(ScriptError) & '|' & ScriptError & '|' & ScriptErrorDetails & '|' & ScriptErrorList;
+    
+		TRACE $(vScriptErrors);    
+
+	Else
+        [DIP]:
+        LOAD	
+            [id],
+            [name],
+            [description],
+            [ownerId],
+            [spaceId]
+            ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        RESIDENT RestConnectorMasterTable;
+    end if
+	
+    UNQUALIFY *; // UnQualifies all fields in subsequent loads
+    DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+  
+Sub loadLicense 
+/********************************************
+***  SubRutine to load Licenses MetaData
+***
+********************************************/
+  
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "licenseNumber",
+        "licenseKey",
+        "parentLicenseNumber",
+        "capabilityBankId",
+        "valid" AS "valid_u0",
+        "status",
+        "origin",
+        "updated",
+        "changeTime",
+        "latestValidTime",
+        "trial",
+        "licenseType",
+        "product",
+        "secondaryNumber",
+        "__KEY_root",
+        (SELECT 
+            "name",
+            "usageClass",
+            "units",
+            "unitsUsed",
+            "overage",
+            "__FK_allotments"
+        FROM "allotments" FK "__FK_allotments")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION (URL "https://$(vu_tenant_fqdn)/api/v1/licenses/overview" );
+
+    QUALIFY *; // Qualifies all fields in subsequent loads          
+
+    [allotments]:
+    LOAD	
+        [name],
+        [usageClass],
+        [units],
+        [unitsUsed],
+        [overage]
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_allotments]);
+
+    [License]:
+    LOAD  [licenseNumber],
+          [licenseKey],
+          [parentLicenseNumber],
+          [capabilityBankId],
+          [valid_u0],
+          [status],
+          [origin],
+          [updated],
+          [changeTime],
+          [latestValidTime],
+          [trial],
+          [licenseType],
+          [product],
+          [secondaryNumber]
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__KEY_root]);
+    UNQUALIFY *; // UnQualifies all fields in subsequent loads
+ 
+    DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+Sub loadLicEnt 
+/********************************************
+***  SubRutine to load Licenses Entitlement MetaData
+***
+********************************************/
+
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"currentPageCount",
+		"totalCount",
+		"closeToOverage" AS "closeToOverage_u0",
+		"globalUsageAvailable",
+		"overage" AS "overage_u0",
+		"__KEY_root",
+		(SELECT 
+			"blocked",
+			"capacityLimit",
+			"closeToOverage",
+			"consumptionReportId",
+			"customerFacing",
+			"globalUsage",
+			"guardrailLimit",
+			"localUsage",
+			"overage",
+			"periodEnd",
+			"periodStart",
+			"periodType",
+			"resourceAction",
+			"resourceId",
+			"resourceType" AS "resourceType_u0",
+			"scopeMapping",
+			"taskDescription",
+			"taskName",
+			"tenantId",
+			"updateTime",
+			"__KEY_data",
+			"__FK_data",
+			(SELECT 
+				"@Value",
+				"__FK_scope"
+			FROM "scope" FK "__FK_scope" ArrayValueAlias "@Value"),
+			(SELECT 
+				"actionToBlock",
+				"resourceType",
+				"__FK_enforcement"
+			FROM "enforcement" FK "__FK_enforcement")
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/consumption/executions" );
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+
+	[enforcement]:
+	LOAD	[actionToBlock],
+		[resourceType],
+		[__FK_enforcement] AS [__KEY_data]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_enforcement]);
+
+	[Entitlement]:
+	LOAD	[blocked],
+		[capacityLimit],
+		[closeToOverage],
+		[consumptionReportId],
+		[customerFacing],
+		[globalUsage],
+		[guardrailLimit],
+		[localUsage],
+		[overage],
+		[periodEnd],
+		[periodStart],
+		[periodType],
+		[resourceAction],
+		[resourceId],
+		[resourceType_u0] AS [resourceType_u0],
+		[scopeMapping],
+		[taskDescription],
+		[taskName],
+		[tenantId],
+		[updateTime]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+	DROP TABLE RestConnectorMasterTable;
+	
+End Sub
+
+Sub LoadAllocation
+/********************************************
+***  SubRutine to load Users MetaData
+***
+********************************************/
+
+	SET vParams = 'limit=100';
+    
+    trace Parameters VParam $(vParams);
+    
+  	Do
+      RestConnectorMasterTable:
+      SQL SELECT 
+          "__KEY_root",
+          (SELECT 
+              "subject",
+              "type",
+              "excess",
+              "created",
+              "__FK_data"
+          FROM "data" FK "__FK_data"),
+          (SELECT 
+              "__KEY_links",
+              "__FK_links",
+              (SELECT 
+                  "href",
+                  "__FK_next"
+              FROM "next" FK "__FK_next"),
+              (SELECT 
+                  "href" AS "href_u0",
+                  "__FK_prev"
+              FROM "prev" FK "__FK_prev")
+          FROM "links" PK "__KEY_links" FK "__FK_links")
+      FROM JSON (wrap on) "root" PK "__KEY_root"
+      WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/licenses/assignments?$(vParams)" );
+
+      [All_Usr]:
+      LOAD Distinct  	
+          [subject],
+          [type]
+          //[excess],
+          //[created]
+      RESIDENT RestConnectorMasterTable
+      WHERE NOT IsNull([__FK_data]);
+
+      [NextURL]:
+      LOAD	[href] AS [NextURL]
+      RESIDENT RestConnectorMasterTable
+      WHERE NOT IsNull([__FK_next]);
+      
+      DROP TABLE RestConnectorMasterTable;
+      
+      LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+      LET vNextURLRows = NoOfRows('NextURL');
+
+      Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>1;    
+    
+//      [Map_AlloUsers]:
+//      LOAD
+//          subject,
+//          type
+//      RESIDENT All_Usr;
+
+End Sub
+
+Sub loadEmail
+/********************************************
+***  SubRutine to load Email Configuration MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"_id",
+		"modificationTime",
+		"tenantId",
+		"isValid",
+		"serviceProvider",
+		"authFailures",
+		"errorCode",
+		"__KEY_root",
+		(SELECT 
+			"emailAddress",
+			"serverAddress",
+			"serverPort",
+			"securityType",
+			"username",
+			"__FK_providerConfig"
+		FROM "providerConfig" FK "__FK_providerConfig"),
+		(SELECT 
+			"statusCode",
+			"statusReason",
+			"__FK_status"
+		FROM "status" FK "__FK_status")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (URL "https://$(vu_tenant_fqdn)/api/v1/transports/email-config" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+	[EmailCgf]:
+	LOAD	
+		[_id],
+		[serverAddress],
+		[serverPort],
+		[securityType],
+		[emailAddress],
+		[modificationTime],
+		[isValid],
+		[authFailures],
+		[username],
+		[serviceProvider],
+		[errorCode],
+		[statusCode],
+		[statusReason]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_providerConfig]);
+	
+    DROP TABLE RestConnectorMasterTable;	
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadNotes
+/********************************************
+***  SubRutine to load Notes MetaData
+***
+********************************************/
+
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"title",
+			"spaceId",
+			"ownerId",
+			"description",
+			"createdTime",
+			"lastModifiedTime",
+			"tenantId",
+			"public",
+			"id",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/notes" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+	[Notes]:
+	LOAD	
+		[title],
+		[spaceId],
+		[ownerId],
+		[description],
+		[createdTime],
+		[lastModifiedTime],
+		[tenantId],
+		[public],
+		[id]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+	
+    DROP TABLE RestConnectorMasterTable;
+    
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+End Sub
+
+Sub loadGroups
+/********************************************
+***  SubRutine to load Groups MetaData
+***
+********************************************/
+
+SET vParams = 'limit=100';
+
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "__KEY_links_u0",
+            "__FK_links_u0",
+            (SELECT 
+                "href" AS "Next_href",
+                "__FK_next"
+            FROM "next" FK "__FK_next")
+        FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/groups?$(vParams)" );
+    
+    TMPNextURL:
+    Load	
+    	[Next_href] AS NextURL
+    Resident RestConnectorMasterTable
+    Where not IsNull([__FK_next]);	
+    
+
+    if ScriptErrorCount>0 then
+		Drop Table RestConnectorMasterTable;
+        
+    	Trace All Good we dont have more then 100 rec;
+        
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id",
+                "tenantId",
+                "createdAt",
+                "lastUpdatedAt",
+                "name",
+                "status",
+                //"idpId",
+                "providerType",
+                "__KEY_data",
+                "__FK_data"
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                "__KEY_links_u0",
+                "__FK_links_u0"
+            FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/groups?$(vParams)" );
+
+        [tmp_Gps]:
+        LOAD	
+          [id],
+          [tenantId],
+          [createdAt],
+          [lastUpdatedAt],
+          [name],
+          [status],
+          [providerType], //	[idpId],
+          [__KEY_data],
+          [__FK_data] AS [__KEY_root]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]);
+
+        Drop Table RestConnectorMasterTable;
+    
+    else
+    
+	Drop Table RestConnectorMasterTable;
+    DROP Table TMPNextURL;
+	
+    DO
+		RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id",
+                "tenantId",
+                "createdAt",
+                "lastUpdatedAt",
+                "name",
+                "status",
+                //"idpId",
+                "providerType",
+                "__KEY_data",
+                "__FK_data"
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                "__KEY_links_u0",
+                "__FK_links_u0",
+                (SELECT 
+                    "href" AS "Next_href",
+                    "__FK_next"
+                FROM "next" FK "__FK_next")
+            FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/groups?$(vParams)" );
+
+        [tmp_Gps]:
+        LOAD Distinct	
+              [id],
+              [tenantId],
+              [createdAt],
+              [lastUpdatedAt],
+              [name],
+              [status],
+              [providerType] //	[idpId],
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]);
+
+        NextURL:
+        Load	
+        	[Next_href] AS NextURL
+        Resident RestConnectorMasterTable
+        Where not IsNull([__FK_next]);
+
+        Drop Table RestConnectorMasterTable;
+
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        Drop Table NextURL;
+        trace vParameters $(vParams);  
+
+      Loop while $(vNextURLRows)>0;  
+      
+      End If      
+
+      QUALIFY *; // Qualifies all fields in subsequent loads
+
+      [Groups]:
+      LOAD 
+          [id],
+          [tenantId],
+          [createdAt],
+          [lastUpdatedAt],
+          [name],
+          [status],
+          [providerType] //,[createdBy], [updatedBy]
+      RESIDENT tmp_Gps;
+
+      UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+      Trace 'Dropping Temp Tables';
+      Drop Table tmp_Gps;
+	
+End Sub
+
+Sub loadRoles
+/********************************************
+***  SubRutine to load Roles MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"name",
+			"type",
+			"canEdit",
+			"canDelete",
+			"level",
+			"createdAt",
+			"lastUpdatedAt",
+			"tenantId",
+			"description",
+			"fullUser",
+			"userEntitlementType",
+			"createdBy",
+			"updatedBy",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/roles?limit=100" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[Roles]:
+	LOAD	
+		[id],
+		[name],
+		[type],
+		[canEdit],
+		[canDelete],
+		[level],
+		[createdAt],
+		[lastUpdatedAt],
+		[tenantId],
+		[description],
+		[fullUser],
+		[userEntitlementType],
+		[createdBy],
+		[updatedBy]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+   
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [Roles_stat]:
+   	LOAD 
+        Count(Roles.id) as CountValue,
+        MAX(Roles.createdAt) as MaxValue,
+        MIN(Roles.createdAt) as MinValue
+    RESIDENT Roles;
+    
+    Let TotRoles = TEXT(Peek('CountValue',0,'Roles_stat'));
+    Let VMinRolesCreated = TEXT(Date(Peek('MinValue',0,'Roles_stat'),'DD-MMM-YYYY'));
+    Let VMaxRolesCreated = TEXT(Date(Peek('MaxValue',0,'Roles_stat'),'DD-MMM-YYYY'));
+
+	Trace 'Dropping Temp Tables';
+    
+    Drop Table Roles_stat;
+	DROP TABLE RestConnectorMasterTable;
+    
+End Sub
+
+Sub loadCollection
+/********************************************
+***  SubRutine to load Collection MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"name",
+			"type",
+			"id",
+			"createdAt",
+			"updatedAt",
+			"creatorId",
+			"updaterId",
+			"tenantId",
+			"itemCount",
+			"full",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/collections");
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[Collections]:
+	LOAD	
+      [name],
+      [type],
+      [id],
+      [createdAt],
+      [updatedAt],
+      [creatorId],
+      [updaterId],
+      [tenantId],
+      [itemCount],
+      [full]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+	
+End Sub
+
+Sub loadDAlert
+/********************************************
+***  SubRutine to load Data Alerts MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+	SQL SELECT 
+		"currentPageCount",
+		"totalCount",
+		"__KEY_root",
+		(SELECT 
+			"absoluteLastScan",
+			"absoluteLastTrigger",
+			"accessMode",
+			"appId",
+			"bookmarkId",
+			"conditionId",
+			"conditionResponse",
+			"dateCreated",
+			"enabled" AS "enabled_u0",
+			"errorStatus",
+			"id",
+			"lastExecutionStatus",
+			"lastScan",
+			"lastTrigger",
+			"lastUpdated",
+			"name",
+			"ownerId",
+			"ownerName",
+			"sheetId",
+			"status",
+			"subscriptionIds",
+			"tenantId",
+			"triggerStats",
+			"triggerType",
+			"__KEY_tasks",
+			"__FK_tasks"
+		FROM "tasks" PK "__KEY_tasks" FK "__FK_tasks")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/data-alerts");
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[DataAlerts]:
+	LOAD	
+		[absoluteLastScan],
+		[absoluteLastTrigger],
+		[accessMode],
+		[appId],
+        ApplyMap('Map_App', appId, 'Unknown') as App_Name,
+		[bookmarkId],
+		[conditionId],
+		[conditionResponse],
+		[dateCreated],
+		[enabled_u0],
+		[errorStatus],
+		[id],
+		[lastExecutionStatus],
+		[lastScan],
+		[lastTrigger],
+		[lastUpdated],
+		[name],
+		[ownerId],
+		[ownerName],
+		[sheetId],
+		[status],
+		[subscriptionIds],
+		[tenantId],
+		[triggerStats],
+		[triggerType]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_tasks]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadApi
+/********************************************
+***  SubRutine to load Api Keys MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"tenantId",
+			"description",
+			"sub",
+			"subType",
+			"expiry",
+			"status",
+			"createdByUser",
+			"created",
+			"lastUpdated",
+			"__FK_data"
+		FROM "data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (  URL "https://$(vu_tenant_fqdn)/api/v1/api-keys" );
+
+	[Api_key_tmp]:
+	LOAD	
+		[id],
+		[tenantId],
+		[description],
+		[sub],
+		[subType],
+		[expiry],
+		[status],
+		[createdByUser],
+        [createdByUser] as 'ownerId'
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+    [Api_key]:
+	LOAD	
+		*
+        //,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT Api_key_tmp;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+	DROP TABLE Api_key_tmp;
+	DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+Sub loadCSP
+/********************************************
+***  SubRutine to load CSP MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"createdDate",
+			"modifiedDate",
+			"origin",
+			"childSrc",
+			"connectSrc",
+			"connectSrcWSS",
+			"fontSrc",
+			"formAction",
+			"frameAncestors",
+			"frameSrc",
+			"imgSrc",
+			"mediaSrc",
+			"objectSrc",
+			"scriptSrc",
+			"styleSrc",
+			"workerSrc",
+			"name",
+			"description",
+			"__FK_data"
+		FROM "data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/csp-origins" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[CSP]:
+	LOAD	
+		[id],
+		[createdDate],
+		[modifiedDate],
+		[origin],
+		[childSrc],
+		[connectSrc],
+		[connectSrcWSS],
+		[fontSrc],
+		[formAction],
+		[frameAncestors],
+		[frameSrc],
+		[imgSrc],
+		[mediaSrc],
+		[objectSrc],
+		[scriptSrc],
+		[styleSrc],
+		[workerSrc],
+		[name],
+		[description]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+    
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+	
+	Trace Completed with CSP MetaData;
+End Sub
+
+Sub loadIDP
+/********************************************
+***  SubRutine to load IDP MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"provider",
+			"protocol" AS "protocol_u0",
+			"interactive",
+			"active",
+			"created",
+			"lastUpdated",
+			"description",
+			"clockToleranceSec",
+			"pendingState",
+			"__KEY_data",
+			"__FK_data"
+		 FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (  URL "https://$(vu_tenant_fqdn)/api/v1/identity-providers"  );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[IDP]:
+	LOAD	
+		[id],
+		[provider],
+		[protocol_u0],
+		[interactive],
+		[active],
+		[lastUpdated],
+		[clockToleranceSec],
+		[pendingState]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+	
+	DROP TABLE RestConnectorMasterTable;
+	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadOath
+/********************************************
+***  SubRutine to load OATH	MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"appType",
+			"clientId",
+			"clientName",
+			"createdAt",
+			"ownerId",
+			"updatedAt",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/oauth-clients" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+	[Oath]:
+	LOAD	
+		[appType],
+		[clientId],
+		[clientName],
+		[createdAt],
+		[ownerId],
+		[updatedAt]
+        //,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+End Sub
+
+Sub loadThemes
+/********************************************
+***  SubRutine to load Themes MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"id",
+		"tenantId",
+		"userId",
+		"name",
+		"type",
+		"qextFilename",
+		"qextVersion",
+		"description",
+		"version",
+		"author",
+		"createdAt",
+		"updatedAt",
+		"__KEY_data"
+	FROM JSON (wrap off) "data" PK "__KEY_data"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/themes"  );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[Themes]:
+	LOAD	
+		[id],
+		[tenantId],
+		[userId],
+		[name],
+		[type],
+		[qextFilename],
+		[qextVersion],
+		[description],
+		[version],
+		[author],
+		[createdAt],
+		[updatedAt]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__KEY_data]);
+    
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // Qualifies all fields in subsequent loads
+    
+End Sub
+
+Sub loadWebi
+/********************************************
+***  SubRutine to load Web Integrations MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"tenantId",
+			"name",
+			"createdBy",
+			"created",
+			"lastUpdated",
+			"__KEY_data",
+			"__FK_data",
+			(SELECT 
+				"@Value",
+				"__FK_validOrigins"
+			FROM "validOrigins" FK "__FK_validOrigins" ArrayValueAlias "@Value")
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (URL "https://$(vu_tenant_fqdn)/api/v1/web-integrations");
+
+	[Web_int_Tmp]:
+	LOAD	
+      "id",
+      "tenantId",
+      "name",
+      "createdBy",
+      "createdBy" as 'ownerId',
+      "created",
+      "lastUpdated",
+      "__KEY_data",
+      "__FK_data" 
+	RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull("__FK_data");
+	
+	QUALIFY *; // Qualifies all fields in subsequent loads    
+
+	[Web_int]:
+	LOAD *	
+         ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	Resident Web_int_Tmp;
+    
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+	DROP TABLE RestConnectorMasterTable;
+    DROP TABLE Web_int_Tmp;
+End Sub
+
+Sub loadExt
+/********************************************
+***  SubRutine to load Extensions MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"id",
+		"tenantId",
+		"userId",
+		"name",
+		"type",
+		"qextFilename",
+		"qextVersion",
+		"loadpath",
+		"description",
+		"version",
+		"author",
+		"icon",
+		"preview",
+		"checksum",
+		"bundled",
+		"supernova",
+		"createdAt",
+		"updatedAt",
+		"__KEY_data",
+		(SELECT 
+			"contentType",
+			"contentLength",
+			"md5",
+			"fileId",
+			"originalname",
+			"__FK_file"
+		FROM "file" FK "__FK_file")
+	FROM JSON (wrap off) "data" PK "__KEY_data"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/extensions" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[Ext]:
+	LOAD	
+		[id],
+		[tenantId],
+		[userId],
+		[name],
+		[type],
+		[qextFilename],
+		[qextVersion],
+		[loadpath],
+		[description],
+		[version],
+		[author],
+		[icon],
+		[preview],
+		[checksum],
+		[bundled],
+		[supernova],
+		[createdAt],
+		[updatedAt],
+		[contentType],
+		[contentLength],
+		[md5],
+		[fileId],
+		[originalname]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__KEY_data]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadKB
+/********************************************
+***  SubRutine to load Knowledgebases MetaData
+***
+********************************************/
+	    RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id",
+                "tenantId",
+                "spaceId",
+                "ownerId",
+                "name",
+                "description",
+                "createdBy",
+                "createdAt",
+                "updatedBy",
+                "updatedAt",
+                "lastIndexedAt",
+                "__KEY_data",
+                "__FK_data",
+                (SELECT 
+                    "fileCount",
+                    "effectivePages",
+                    "textSize",
+                    "fileSize",
+                    "__FK_contentSummary"
+                FROM "contentSummary" FK "__FK_contentSummary")
+            FROM "data" PK "__KEY_data" FK "__FK_data")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/knowledgebases");
+        
+	if ScriptErrorcount > 0 then
+		QUALIFY *; // Qualifies all fields in subsequent loads 
+
+		[KB]:
+		LOAD * Inline ['id','tenantId','Spc_id','Usr_id','name','description','createdBy','createdAt','updatedBy','updatedAt','lastIndexedAt','__KEY_data','fileCount','effectivePages', 'textSize','fileSize','Space_Name','User_Name'];
+
+	Else
+
+        [KB_Summary]:
+		LOAD	
+		    [fileCount],
+			[effectivePages], 
+			[textSize],
+			[fileSize],
+			[__FK_contentSummary] AS '__KEY_data'
+		RESIDENT RestConnectorMasterTable
+		WHERE NOT IsNull([__FK_contentSummary]);
+        
+		[Tmp_KB]:
+		LOAD 
+			[id],
+			[tenantId],
+			[spaceId],
+			[ownerId],
+			[name],
+			[description],
+			[createdBy],
+			[createdAt],
+			[updatedBy],
+			[updatedAt],
+			[lastIndexedAt],
+            [__KEY_data]
+            ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+            //,[__FK_data] as 'FK_data'         
+		RESIDENT RestConnectorMasterTable
+		WHERE NOT IsNull([__FK_data]);
+		
+        Inner Join (Tmp_KB)
+        LOAD 
+            __KEY_data,
+            fileCount,
+			effectivePages, 
+		    textSize,
+			fileSize
+        RESIDENT KB_Summary;   
+        
+        QUALIFY *; // Qualifies all fields in subsequent loads 
+        
+      	[KB]:
+        LOAD *
+        RESIDENT Tmp_KB; 
+        
+        DROP TABLE Tmp_KB;        
+        DROP TABLE KB_Summary;
+	end if
+   
+    DROP TABLE RestConnectorMasterTable;
+	UnQUALIFY *; // unQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadAssistants
+/********************************************
+***  SubRutine to load Assistants MetaData
+***
+********************************************/
+  	  RestConnectorMasterTable:
+      SQL SELECT 
+          "__KEY_root",
+          (SELECT 
+              "id",
+              "name",
+              "title",
+              "description",
+              "ownerId",
+              "createdBy",
+              "createdAt",
+              "updatedBy",
+              "updatedAt",
+              "tenantId",
+              "spaceId",
+              "welcomeMessage",
+              "hasAvatar",
+              "__KEY_data",
+              "__FK_data"
+          FROM "data" PK "__KEY_data" FK "__FK_data")
+      FROM JSON (wrap on) "root" PK "__KEY_root"
+	  WITH CONNECTION (  URL "https://$(vu_tenant_fqdn)/api/v1/assistants" );
+
+	  QUALIFY *; // Qualifies all fields in subsequent loads
+
+	  if ScriptErrorcount > 0 then
+
+		  [Assistants]:
+		  LOAD * Inline ['id','name','title','description','ownerId','createdBy','createdAt','updatedBy','updatedAt','tenantId','spaceId','welcomeMessage','Space_Name','User_Name' ];
+
+	  Else
+
+          [Assistants]:
+          LOAD	
+            [id],
+            [name],
+            [title],
+            [description],
+            [ownerId],
+            [createdBy],
+            [createdAt],
+            [updatedBy],
+            [updatedAt],
+            [tenantId],
+            [spaceId],
+            [welcomeMessage]
+            //[customProperties]
+            ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+            RESIDENT RestConnectorMasterTable
+            WHERE NOT IsNull([__FK_data]);
+          
+	  end if
+	  UNQUALIFY *; // Qualifies all fields in subsequent loads
+      DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+Sub loadTask
+/********************************************
+***  SubRutine to load Tasks MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"partial",
+			"autoReload",
+			"autoReloadPartial",
+			"tenantId",
+			"userId",
+			"appId",
+			"fortressId",
+			"log",
+			"disabledCode",
+			"spaceId",
+			"startDateTime",
+			"state",
+			"timeZone",
+			"nextExecutionTime",
+			"lastExecutionTime",
+			"migrated",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/reload-tasks" );
+
+	[Task_tmp]:
+	LOAD	
+		[id],
+		[partial],
+		[autoReload],
+		[autoReloadPartial],
+		[tenantId],
+		[userId],
+        [userId] as 'ownerId',
+		[appId],
+		[fortressId],
+		[log],
+		[disabledCode],
+		[spaceId],
+		[startDateTime],
+		[state],
+		[timeZone],
+		[nextExecutionTime],
+		[lastExecutionTime],
+		[migrated] 
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+	
+    [Task_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(lastExecutionTime) as MaxValue,
+        MIN(lastExecutionTime) as MinValue
+    RESIDENT Task_tmp;
+       
+    Let vTotTask = TEXT(Peek('CountValue',0,'Task_stat'));
+    Let VMinTaskExecuted = TEXT(Date(Peek('MinValue',0,'Task_stat'),'DD-MMM-YYYY'));
+    Let VMaxTaskExecuted = TEXT(Date(Peek('MaxValue',0,'Task_stat'),'DD-MMM-YYYY'));
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+    
+    [Task]:
+   	LOAD *
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        ,ApplyMap('Map_App', appId, 'Unknown') as App_Name
+    RESIDENT Task_tmp;
+	
+    UNQUALIFY *; // Qualifies all fields in subsequent loads
+	DROP TABLE RestConnectorMasterTable;
+	DROP TABLE Task_tmp;
+    DROP TABLE Task_stat;    
+End Sub
+
+Sub loadWebh
+/********************************************
+***  SubRutine to load WebHooks MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"createdAt",
+			"updatedAt",
+			"createdByUserId",
+			"updatedByUserId",
+			"ownerId",
+			"origin",
+			"name",
+			"description",
+			"url",
+			"enabled",
+			"level",
+			"filter",
+			"checkCertificateRevocation",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (URL "https://$(vu_tenant_fqdn)/api/v1/webhooks");
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+    
+	[Webh]:
+	LOAD	
+		[id],
+		[createdAt],
+		[updatedAt],
+		[createdByUserId],
+		[updatedByUserId],
+		[ownerId],
+		[origin],
+		[name],
+		[description],
+		[url],
+		[enabled],
+		[level],
+		[filter],
+		[checkCertificateRevocation]
+        //,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+	
+    DROP TABLE RestConnectorMasterTable;
+    UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadGlo
+/********************************************
+***  SubRutine to load Glossaries MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id",
+            "name",
+            "description",
+            "tags",
+            "ownerId",
+            "createdBy",
+            "createdAt",
+            "updatedBy",
+            "updatedAt",
+            "spaceId",
+            "overview",
+            "__KEY_data",
+            "__FK_data"
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/glossaries"  );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+    
+    [Glossaries]:
+    LOAD	
+        "id",
+        "name",
+        "description",
+        "tags",
+        "ownerId",
+        "createdBy",
+        "createdAt",
+        "updatedBy",
+        "updatedAt",
+        "spaceId",
+        "overview",
+        "__KEY_data",
+        "__FK_data" 
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable; //    WHERE NOT IsNull([__FK_data]);
+
+    DROP TABLE RestConnectorMasterTable;
+	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+Sub loadRpt
+/********************************************
+***  SubRutine to load Report Templates MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id",
+            "name",
+            "type",
+            "ownerId",
+            "createdAt",
+            "updatedAt",
+            "createdBy",
+            "updatedBy",
+            "sourceAppId",
+            "sourceAppName",
+            "metadataVersion",
+            "__KEY_data",
+            "__FK_data"
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/report-templates");
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+    
+    [App_Reports]:
+    LOAD	
+            "id",
+            "name",
+            "type",
+            "ownerId",
+            "createdAt",
+            "updatedAt",
+            "createdBy",
+            "updatedBy",
+            "sourceAppId",
+            "sourceAppName",
+            "metadataVersion",
+            "__KEY_data",
+            "__FK_data"
+            //,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data]);
+
+    DROP TABLE RestConnectorMasterTable;
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+Sub loadSubscriptions
+/********************************************
+***  SubRutine to load Subscriptions MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "currentPageCount",
+        "totalCount",
+        "__KEY_root",
+        (SELECT 
+            "appId" AS "appId_u2",
+            "appName",
+            "createdBy",
+            "dateCreated",
+            "description" AS "description_u0",
+            "emailContent",
+            "enabledBySystem" AS "enabledBySystem_u0",
+            "id" AS "id_u0",
+            "lastExecutionDate",
+            "lastRun",
+            "lastUpdated",
+            "name" AS "name_u4",
+            "owner",
+            "ownerName",
+            "startTime",
+            "statusCode",
+            "subType" AS "subType_u0",
+            "tenant",
+            "type" AS "type_u1",
+            "updatedBy",
+            "hasCycleFields",
+            "latestExecutionFilesURL",
+            "latestExecutionURL",
+            "persistentBookmarkIncludeVariables",
+            "traceid",
+            "distributionListId",
+            "enabledByUser" AS "enabledByUser_u0",
+            "failedExecutionsCount",
+            "multiInsightURLs",
+            "spaceId",
+            "templateId" AS "templateId_u0",
+            "enabled" AS "enabled_u1",
+            "executeOnCreation",
+            "insightDirectURL",
+            "insightFallbackURL",
+            "insightID" AS "insightID_u0",
+            "lastViewed",
+            "thumbnail",
+            "__KEY_sharingTasks",
+            "__FK_sharingTasks",
+            (SELECT 
+                "body",
+                "subject",
+                "type" AS "type_u0",
+                "__FK_emailContent"
+            FROM "emailContent" FK "__FK_emailContent"),
+            (SELECT 
+                "chronosJobID" AS "chronosJobID_u0",
+                "executeOnAppReload",
+                "executionHistoryInterval",
+                "__KEY_trigger",
+                "__FK_trigger",
+                (SELECT 
+                    "@Value" AS "@Value_u16",
+                    "__FK_recurrence_u0"
+                FROM "recurrence" FK "__FK_recurrence_u0" ArrayValueAlias "@Value_u16")
+            FROM "trigger" PK "__KEY_trigger" FK "__FK_trigger"),
+            (SELECT 
+                "@Value" AS "@Value_u17",
+                "__FK_latestExecutionFilesURL"
+            FROM "latestExecutionFilesURL" FK "__FK_latestExecutionFilesURL" ArrayValueAlias "@Value_u17")
+        FROM "sharingTasks" PK "__KEY_sharingTasks" FK "__FK_sharingTasks")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/sharing-tasks"  );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+    
+	[Subscriptions]:
+    LOAD	
+        [appId_u2],
+        [appName],
+        [createdBy],
+        [dateCreated],
+        [description_u0],
+        [emailContent],
+        [enabledBySystem_u0],
+        [id_u0],
+        [lastExecutionDate],
+        [lastRun],
+        [lastUpdated],
+        [name_u4],
+        [owner],
+        [ownerName],
+        [startTime],
+        [statusCode],
+        [subType_u0],
+        [tenant],
+        [type_u1],
+        [updatedBy],
+        [hasCycleFields],
+        [latestExecutionFilesURL],
+        [latestExecutionURL],
+        [persistentBookmarkIncludeVariables],
+        [traceid],
+        [distributionListId],
+        [enabledByUser_u0],
+        [failedExecutionsCount],
+        [multiInsightURLs],
+        [spaceId] ,
+        [templateId_u0],
+        [enabled_u1],
+        [executeOnCreation],
+        [insightDirectURL],
+        [insightFallbackURL],
+        [insightID_u0],
+        [lastViewed],
+        [thumbnail],
+        [__KEY_sharingTasks],
+        [__FK_sharingTasks]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        //,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable ;
+    //WHERE NOT IsNull([__FK_sharingTasks]);
+	
+    DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+Sub loadExtURL
+/********************************************
+***  SubRutine to load External URL MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id",
+            "index",
+            "name",
+            "link",
+            "spaceId",
+            "description",
+            "linkType",
+            "ownerId",
+            "secureQri",
+            "createdDate",
+            "modifiedDate",
+            "thumbnailLink",
+            "__KEY_data",
+            "__FK_data"
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/generic-links"  );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+    [ExURL]:
+    LOAD	
+        [id],
+        [index],
+        [name],
+        [link],
+        [spaceId],
+        [description],
+        [linkType],
+        [ownerId],
+        [createdDate],
+        [modifiedDate]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data]);
+    
+	DROP TABLE RestConnectorMasterTable;
+	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+
+Sub loadLicQuotas
+/********************************************
+***  SubRutine to load License Qoutas MetaData
+***
+********************************************/
+RestConnectorMasterTable:
+SQL SELECT 
+	"id",
+	"type",
+	"__KEY_data",
+	(SELECT 
+		"quota",
+		"unit",
+		"usage",
+		"__KEY_attributes",
+		"__FK_attributes",
+		(SELECT 
+			"@Value",
+			"__FK_warningThresholds"
+		FROM "warningThresholds" FK "__FK_warningThresholds" ArrayValueAlias "@Value")
+	FROM "attributes" PK "__KEY_attributes" FK "__FK_attributes")
+FROM JSON (wrap off) "data" PK "__KEY_data" 
+WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/quotas?reportUsage=true"  );
+
+[QoutawarningThresholds]:
+LOAD	[@Value],
+	[__FK_warningThresholds] AS [__KEY_attributes]
+RESIDENT RestConnectorMasterTable
+WHERE NOT IsNull([__FK_warningThresholds]);
+
+[Qoutaattributes]:
+LOAD	[quota],
+	[unit],
+	[usage],
+	[__KEY_attributes],
+	[__FK_attributes] AS [__KEY_data]
+RESIDENT RestConnectorMasterTable
+WHERE NOT IsNull([__FK_attributes]);
+
+[Qoutadata]:
+LOAD	[id],
+	[type],
+	[__KEY_data]
+RESIDENT RestConnectorMasterTable
+WHERE NOT IsNull([__KEY_data]);
+
+DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+Sub loadBanner
+/********************************************
+***  SubRutine to load Banner
+***
+********************************************/
+  RestConnectorMasterTable:
+  SQL SELECT 
+      "id",
+      "tenantId",
+      "createdBy",
+      "createdAt",
+      "updatedBy",
+      "updatedAt",
+      "enabled",
+      "message",
+      "startTime",
+      "endTime",
+      "type",
+      "linkEnabled",
+      "linkLabel",
+      "linkUrl"
+  FROM JSON (wrap on) "root"
+  WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/banners"  );
+  
+  QUALIFY *; // UnQualifies all fields in subsequent loads
+
+  [Banners]:
+  LOAD	[id],
+      [tenantId],
+      [createdBy],
+      [createdAt],
+      [updatedBy],
+      [updatedAt],
+      [enabled],
+      [message],
+      [startTime],
+      [endTime],
+      [type],
+      [linkEnabled],
+      [linkLabel],
+      [linkUrl]
+  RESIDENT RestConnectorMasterTable;
+  
+  UnQUALIFY *; // UnQualifies all fields in subsequent loads
+  DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+Sub loadIPConfig
+/********************************************
+***  SubRutine to load IP Policies
+***
+********************************************/
+
+  RestConnectorMasterTable:
+  SQL SELECT 
+      "__KEY_root",
+      (SELECT 
+          "createdAt",
+          "createdBy",
+          "deletable",
+          "editable",
+          "enabled",
+          "id",
+          "name",
+          "tenantId",
+          "toggleable",
+          "updatedAt",
+          "updatedBy",
+          "__KEY_data",
+          "__FK_data",
+          (SELECT 
+              "@Value",
+              "__FK_allowedIps"
+          FROM "allowedIps" FK "__FK_allowedIps" ArrayValueAlias "@Value")
+      FROM "data" PK "__KEY_data" FK "__FK_data"),
+      (SELECT 
+          "__KEY_links",
+          "__FK_links",
+          (SELECT 
+              "href",
+              "__FK_self"
+          FROM "self" FK "__FK_self")
+      FROM "links" PK "__KEY_links" FK "__FK_links")
+  FROM JSON (wrap on) "root" PK "__KEY_root"
+  WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/core/ip-policies"  );
+
+  QUALIFY *; // UnQualifies all fields in subsequent loads
+
+  [IPConfig]:
+  LOAD	[createdAt],
+      [createdBy],
+      [deletable],
+      [editable],
+      [enabled],
+      [id],
+      [name],
+      [tenantId],
+      [toggleable],
+      [updatedAt],
+      [updatedBy]
+  RESIDENT RestConnectorMasterTable
+  WHERE NOT IsNull([__FK_data]);
+
+  UnQUALIFY *; // UnQualifies all fields in subsequent loads
+ 
+  DROP TABLE RestConnectorMasterTable;
+
+End Sub
+
+// ///api/v1/encryption/keyproviders
+// Sub loadkeyproviders
+// /********************************************
+// ***  SubRutine to load IP Policies
+// ***
+// ********************************************/
+
+
+//   WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/core/ip-policies"  );
+
+//   QUALIFY *; // UnQualifies all fields in subsequent loads
+
+
+//   UnQUALIFY *; // UnQualifies all fields in subsequent loads
+ 
+//   DROP TABLE RestConnectorMasterTable;
+
+// End Sub
+
+
+
+///$tab Core SubRutines
+Sub loadApplications
+/********************************************
+***  SubRutine to load Spaces MetaData
+***
+********************************************/
+	SET vParams = 'limit=100&resourceType=app,qvapp,qlikview';
+    Do
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+             (SELECT 
+                "__FK_data",
+                "__KEY_data",
+                (SELECT 
+                    "_resourcetype",
+                    "createdDate",
+                    "description",
+                    "dynamicColor",
+                    "hasSectionAccess",
+                    "id",
+                    "isDirectQueryMode",
+                    "lastReloadTime",
+                    "modifiedDate",
+                    "name",
+                    "originAppId",
+                    "owner",
+                    "ownerId",
+                    "publishTime",
+                    "published",
+                    "spaceId",
+                    "thumbnail",
+                    "usage",
+                    "appId",
+                    "appType",
+                    "dataSetCount",
+                    "dataStoreName",
+                    "dataStoreType",
+                    "reloadOnly",
+                    "technicalDescription",
+                    "technicalName",
+                    "version",
+                    "qri",
+                    "secureQri",
+                    "sourceSystemId",
+                    "type",
+                    "__FK_resourceAttributes"
+                FROM "resourceAttributes" FK "__FK_resourceAttributes"),
+                (SELECT 
+                    "appFile",
+                    "appMemory",
+                    "__FK_resourceSize"
+                FROM "resourceSize" FK "__FK_resourceSize"),
+                (SELECT 
+                    "usedBy",
+                    "__FK_itemViews"
+                FROM "itemViews" FK "__FK_itemViews"),
+                (SELECT 
+                  "__KEY_links",
+                  "__FK_links",
+                  (SELECT 
+                      "href",
+                      "__FK_next"
+                  FROM "next" FK "__FK_next"),
+                  (SELECT 
+                      "href" AS "href_u0",
+                      "__FK_self"
+                  FROM "self" FK "__FK_self"),
+                  (SELECT 
+                      "__FK_prev"
+                  FROM "prev" FK "__FK_prev")
+              FROM "links" PK "__KEY_links" FK "__FK_links")
+            FROM "data" PK "__KEY_data" FK "__FK_data")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/items?$(vParams)" );
+
+        [Temp_App]:
+        LOAD	
+            [id],
+            [name],
+            [description],
+            [lastReloadTime],
+            [createdDate],  
+            [modifiedDate],    
+            [dynamicColor],
+            [hasSectionAccess],
+            [isDirectQueryMode],
+            [_resourcetype],
+            [originAppId],
+            [owner],
+            [ownerId],
+            [publishTime],
+            [published],
+            [spaceId],
+            [thumbnail],
+            [usage],
+            [appId],
+            [appType],
+            [dataSetCount],
+            [dataStoreName],
+            [dataStoreType],
+            [reloadOnly],
+            [technicalDescription],
+            [technicalName],
+            [version],
+            [qri],
+            [secureQri],
+            [sourceSystemId],
+            [type],
+            [__FK_resourceAttributes] AS [__KEY_data]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_resourceAttributes])
+        and Match([usage] , 'ANALYTICS'); // Exact match
+        ;
+        Inner Join
+        //[resourceSize]:
+        LOAD	[appFile],
+            [appMemory],
+            [__FK_resourceSize] AS [__KEY_data]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_resourceSize]);
+        Inner Join
+        //[itemViews]:
+        LOAD	[usedBy],
+            [__FK_itemViews] AS [__KEY_data]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_itemViews]);
+
+        NextURL:
+        Load	
+        [href_u0] AS NextURL
+        Resident RestConnectorMasterTable
+        Where not IsNull([__FK_next]);
+
+        Drop Table RestConnectorMasterTable;
+
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        trace '$(vParams)';
+        Drop Table NextURL;
+        
+    Loop while $(vNextURLRows)>0;  
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [Applications]:
+        LOAD	
+            [id],
+            [name],
+            [description],
+            [lastReloadTime],
+            [createdDate],  
+            [modifiedDate],    
+            [dynamicColor],
+            [hasSectionAccess],
+            [isDirectQueryMode],
+            [_resourcetype],
+            [originAppId],
+            [owner],
+            [ownerId],
+            [ownerId] as 'Users.id', ///
+            [publishTime],
+            [published],
+            [spaceId],
+            [thumbnail],
+            [usage],
+            [appId],
+            [appType],
+            [dataSetCount],
+            [dataStoreName],
+            [dataStoreType],
+            [reloadOnly],
+            [technicalDescription],
+            [technicalName],
+            [version],
+            [qri],
+            [secureQri],
+            [sourceSystemId],
+            [type],
+            [appFile],
+            [appMemory],
+            [usedBy]
+            ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        RESIDENT Temp_App;  
+
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [App_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(createdDate) as MaxValue,
+        MIN(createdDate) as MinValue,
+        Num((MAX(appFile)/1024/1024),'#,##0.00') as MAXAppFile,
+        Num((AVG(appFile)/1024/1024),'#,##0.00') as AVGAppFile,
+        Num((MIN(appFile)/1024/1024),'#,##0.00') as MINAppFile,
+        Num((MAX(appMemory)/1024/1024),'#,##0.00') as MAXAppMem,
+        Num((AVG(appMemory)/1024/1024),'#,##0.00') as AVGAppMem,
+        Num((MIN(appMemory)/1024/1024),'#,##0.00') as MINAppMem,
+        SUM(If(isDirectQueryMode = -1, 1,0)) as CountDirectQuery,
+        SUM(IF([published]= -1 ,1,0)) as CountPublished,
+        SUM(IF([hasSectionAccess] = -1 ,1,0)) as CountSection
+    RESIDENT Temp_App;
+    
+    Let TotApps = TEXT(Peek('CountValue',0,'App_stat'));
+    Let VMinAppCreated = TEXT(Date(Peek('MinValue',0,'App_stat'),'DD-MMM-YYYY'));
+    Let VMaxAppCreated = TEXT(Date(Peek('MaxValue',0,'App_stat'),'DD-MMM-YYYY'));
+    Let vMAXAppFile = TEXT(Peek('MAXAppFile',0,'App_stat'));
+    Let vAVGAppFile = TEXT(Peek('AVGAppFile',0,'App_stat'));
+    Let vMINAppFile = TEXT(Peek('MINAppFile',0,'App_stat'));
+    Let vMAXAppMem = TEXT(Peek('MAXAppMem',0,'App_stat'));
+    Let vAVGAppMem = TEXT(Peek('AVGAppMem',0,'App_stat'));
+    Let vMINAppMem = TEXT(Peek('MINAppMem',0,'App_stat'));
+    Let vCountDirectQuery = TEXT(Peek('CountDirectQuery',0,'App_stat'));
+    Let vCountPublished = TEXT(Peek('CountPublished',0,'App_stat'));
+    Let vCountSection = TEXT(Peek('CountSection',0,'App_stat'));
+    
+	Trace 'Dropping Temp Tables';
+    
+    [Map_App]:
+    LOAD
+        id as appId,
+        name as App_Name
+    RESIDENT Temp_App;
+    
+    Drop Table Temp_App;
+    Drop Table App_stat;
+End sub
+
+Sub loadPrepareData
+/********************************************
+***  SubRutine to load Prepare Data MetaData
+***
+********************************************/
+    Set vParams = 'limit=100&resourceType=app,qvapp';
+
+        Do
+            RestConnectorMasterTable:
+            SQL SELECT 
+                "__KEY_root",
+                 (SELECT 
+                    "__FK_data",
+                    "__KEY_data",
+                    (SELECT 
+                        "_resourcetype",
+                        "createdDate",
+                        "description",
+                        "dynamicColor",
+                        "hasSectionAccess",
+                        "id",
+                        "isDirectQueryMode",
+                        "lastReloadTime",
+                        "modifiedDate",
+                        "name",
+                        "originAppId",
+                        "owner",
+                        "ownerId",
+                        "publishTime",
+                        "published",
+                        "spaceId",
+                        "thumbnail",
+                        "usage",
+                        "appId",
+                        "appType",
+                        "dataSetCount",
+                        "dataStoreName",
+                        "dataStoreType",
+                        "reloadOnly",
+                        "technicalDescription",
+                        "technicalName",
+                        "version",
+                        "qri",
+                        "secureQri",
+                        "sourceSystemId",
+                        "type",
+                        "__FK_resourceAttributes"
+                    FROM "resourceAttributes" FK "__FK_resourceAttributes"),
+                    (SELECT 
+                        "appFile",
+                        "appMemory",
+                        "__FK_resourceSize"
+                    FROM "resourceSize" FK "__FK_resourceSize"),
+                    (SELECT 
+                        "usedBy",
+                        "__FK_itemViews"
+                    FROM "itemViews" FK "__FK_itemViews"),
+                    (SELECT 
+                      "__KEY_links",
+                      "__FK_links",
+                      (SELECT 
+                          "href",
+                          "__FK_next"
+                      FROM "next" FK "__FK_next"),
+                      (SELECT 
+                          "href" AS "href_u0",
+                          "__FK_self"
+                      FROM "self" FK "__FK_self"),
+                      (SELECT 
+                          "__FK_prev"
+                      FROM "prev" FK "__FK_prev")
+                  FROM "links" PK "__KEY_links" FK "__FK_links")
+                FROM "data" PK "__KEY_data" FK "__FK_data")
+            FROM JSON (wrap on) "root" PK "__KEY_root"
+            WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/items?$(vParams)" );
+
+            [Temp_PD]:
+            LOAD	
+                [id],
+                [name],
+                [description],
+                [lastReloadTime],
+                [createdDate],  
+                [modifiedDate],    
+                [dynamicColor],
+                [hasSectionAccess],
+                [isDirectQueryMode],
+                [_resourcetype],
+                [originAppId],
+                [owner],
+                [ownerId],
+                [publishTime],
+                [published],
+                [spaceId],
+                [thumbnail],
+                [usage],
+                [appId],
+                [appType],
+                [dataSetCount],
+                [dataStoreName],
+                [dataStoreType],
+                [reloadOnly],
+                [technicalDescription],
+                [technicalName],
+                [version],
+                [qri],
+                [secureQri],
+                [sourceSystemId],
+                [type],
+                [__FK_resourceAttributes] AS [__KEY_data]
+            RESIDENT RestConnectorMasterTable
+            WHERE NOT IsNull([__FK_resourceAttributes])
+            and Match([usage] ,'DATAFLOW_PREP','DATA_PREPARATION','SINGLE_TABLE_PREP')
+            ; // Exact match;
+            Inner Join
+            //[resourceSize]:
+            LOAD	[appFile],
+                [appMemory],
+                [__FK_resourceSize] AS [__KEY_data]
+            RESIDENT RestConnectorMasterTable
+            WHERE NOT IsNull([__FK_resourceSize]);
+            Inner Join
+            //[itemViews]:
+            LOAD	[usedBy],
+                [__FK_itemViews] AS [__KEY_data]
+            RESIDENT RestConnectorMasterTable
+            WHERE NOT IsNull([__FK_itemViews]);
+
+            NextURL:
+            Load	
+            [href_u0] AS NextURL
+            Resident RestConnectorMasterTable
+            Where not IsNull([__FK_next]);
+
+            Drop Table RestConnectorMasterTable;
+
+            LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+            LET vNextURLRows = NoOfRows('NextURL');
+            Drop Table NextURL;
+
+            TRACE Next URL $(vNextURLRows);
+
+        Loop while $(vNextURLRows)>0;  
+
+        QUALIFY *; // Qualifies all fields in subsequent loads
+
+        [PrepareData]:
+        LOAD	
+            [id],
+            [name],
+            [description],
+            [lastReloadTime],
+            [createdDate],  
+            [modifiedDate],    
+            [dynamicColor],
+            [hasSectionAccess],
+            [isDirectQueryMode],
+            [_resourcetype],
+            [originAppId],
+            [owner],
+            [ownerId],
+            [publishTime],
+            [published],
+            [spaceId],
+            [thumbnail],
+            [usage],
+            IF ( [usage] = 'DATAFLOW_PREP', 'Data Flow',
+            	IF ( [usage] = 'DATA_PREPARATION', 'Script',
+                	IF ( [usage] = 'SINGLE_TABLE_PREP','Table Recipe')
+                    )
+            ) as Usage_Type,
+            [appId],
+            [appType],
+            [dataSetCount],
+            [dataStoreName],
+            [dataStoreType],
+            [reloadOnly],
+            [technicalDescription],
+            [technicalName],
+            [version],
+            [qri],
+            [secureQri],
+            [sourceSystemId],
+            [type],
+            [appFile],
+            [appMemory],
+            [usedBy]
+            ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        RESIDENT Temp_PD;
+
+        UnQUALIFY *; // UnQualifies all fields in subsequent loads
+	
+    	[DF_stat]:
+        LOAD 
+			IF ( [usage] = 'DATAFLOW_PREP', 'Data Flow',
+            	IF ( [usage] = 'DATA_PREPARATION', 'Script',
+                	IF ( [usage] = 'SINGLE_TABLE_PREP','Table Recipe'))) as Usage_Type,
+            COUNT(id) as CountValueData,
+            MAX(createdDate) as MaxValue,
+            MIN(createdDate) as MinValue
+        RESIDENT Temp_PD
+        group by [usage]
+        order by [usage];
+       
+        Let TotDFlow = TEXT(Peek('CountValueData',1,'DF_stat'));
+        Let VMinDFlowCreated = TEXT(Date(Peek('MinValue',1,'DF_stat'),'DD-MMM-YYYY'));
+        Let VMaxDFlowCreated = TEXT(Date(Peek('MaxValue',1,'DF_stat'),'DD-MMM-YYYY'));
+
+        Let TotScript = TEXT(Peek('CountValueData',0,'DF_stat'));
+        Let VMinScriptCreated = TEXT(Date(Peek('MinValue',0,'DF_stat'),'DD-MMM-YYYY'));
+        Let VMaxScriptCreated = TEXT(Date(Peek('MaxValue',0,'DF_stat'),'DD-MMM-YYYY'));
+        
+        Let TotTableRecipe = TEXT(Peek('CountValueData',2,'DF_stat'));
+        Let VMinTableRecipeCreated = TEXT(Date(Peek('MinValue',2,'DF_stat'),'DD-MMM-YYYY'));
+        Let VMaxTableRecipeCreated = TEXT(Date(Peek('MaxValue',2,'DF_stat'),'DD-MMM-YYYY'));
+
+		Trace 'Dropping Temp Tables';
+        Drop Table Temp_PD;
+        Drop Table DF_stat;
+	    Trace Completed with Prepare Data MetaData;
+End sub
+
+Sub loadDataProducts
+/********************************************
+***  SubRutine to load Data Product MetaData
+***
+********************************************/
+    Set vParams = 'limit=100&resourceType=dataproduct';
+
+        //Do
+       RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "name",
+                "resourceCustomAttributes",
+                "resourceUpdatedAt",
+                "resourceType",
+                "resourceId",
+                "resourceCreatedAt",
+                "id",
+                "createdAt",
+                "updatedAt",
+                "creatorId",
+                "updaterId",
+                "tenantId",
+                "isFavorited" AS "isFavorited_u0",
+                "ownerId",
+                "resourceReloadEndTime",
+                "resourceReloadStatus",
+                "spaceId",
+                "description",
+                "__KEY_data",
+                "__FK_data",
+                (SELECT 
+                    "activated",
+                    "mainId",
+                    "nbDatasets",
+                    "qri",
+                    "qualityCompleteness",
+                    "qualityValidity",
+                    "trustScore",
+                    "__KEY_resourceAttributes",
+                    "__FK_resourceAttributes"
+                FROM "resourceAttributes" PK "__KEY_resourceAttributes" FK "__FK_resourceAttributes")
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                "__KEY_links_u0",
+                "__FK_links_u0",
+                (SELECT 
+                    "href" AS "href_u2",
+                    "__FK_self_u0"
+                FROM "self" FK "__FK_self_u0")
+            FROM "links" PK "__KEY_links_u0" FK "__FK_links_u0")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+         WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/items?$(vParams)" );
+
+        [Temp_DP]:
+        LOAD	
+            [activated],
+            [mainId],
+            [nbDatasets],
+            [qri],
+            [qualityCompleteness],
+            [qualityValidity],
+            [trustScore],
+            [__KEY_resourceAttributes],
+			[__FK_resourceAttributes] AS [__KEY_data]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_resourceAttributes]);
+        Inner Join
+        LOAD	
+            [name],
+            [resourceCustomAttributes],
+            [resourceUpdatedAt],
+            [resourceType],
+            [resourceId],
+            [resourceCreatedAt],
+            [id],
+            [createdAt],
+            [updatedAt],
+            [creatorId],
+            [updaterId],
+            [tenantId],
+            [isFavorited_u0] AS [isFavorited_u0],
+            [ownerId],
+            [resourceReloadEndTime],
+            [resourceReloadStatus],
+            [spaceId],
+            [description],
+            [__KEY_data],
+            [__FK_data] AS [__KEY_root]
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data])
+        and [__KEY_data] = [__KEY_data];
+
+        Drop Table RestConnectorMasterTable;
+        
+//             LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+//             LET vNextURLRows = NoOfRows('NextURL');
+//             Drop Table NextURL;
+
+//             TRACE Next URL $(vNextURLRows);
+
+//         Loop while $(vNextURLRows)>0;  
+
+        QUALIFY *; // Qualifies all fields in subsequent loads
+
+        [DataProducts]:
+        LOAD	
+            [activated],
+            [mainId],
+            [nbDatasets],
+            [qri],
+            [qualityCompleteness],
+            [qualityValidity],
+            [trustScore],
+            [name],
+            [resourceCustomAttributes],
+            [resourceUpdatedAt],
+            [resourceType],
+            [resourceId],
+            [resourceCreatedAt],
+            [id],
+            [createdAt],
+            [updatedAt],
+            [creatorId],
+            [updaterId],
+            [tenantId],
+            [isFavorited_u0] AS [isFavorited_u0],
+            [ownerId],
+            [resourceReloadEndTime],
+            [resourceReloadStatus],
+            [spaceId],
+            [description]
+        RESIDENT Temp_DP;
+
+        UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    	[DP_stat]:
+        LOAD 
+            COUNT(id) as CountValueData,
+            MAX(createdAt) as MaxValue,
+            MIN(createdAt) as MinValue
+        RESIDENT Temp_DP
+        group by [id];
+       
+        Let TotDP = TEXT(Peek('CountValueData',1,'DF_stat'));
+        Let VMinDPCreated = TEXT(Date(Peek('MinValue',1,'DP_stat'),'DD-MMM-YYYY'));
+        Let VMaxDPCreated = TEXT(Date(Peek('MaxValue',1,'DP_stat'),'DD-MMM-YYYY'));
+
+
+		Trace 'Dropping Temp Tables';
+        Drop Table Temp_DP;
+        Drop Table DP_stat;
+	    Trace Completed with Data Products MetaData;
+End sub
+
+Sub loadAuto
+/********************************************
+***  SubRutine to load Automations MetaData
+***
+********************************************/
+    SET vParams = 'limit=100';
+    Do
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "id",
+                "ownerId",
+                "name",
+                "spaceId",
+                "state",
+                "duration",
+                "description",
+                "workspace",
+                "lastRun",
+                "lastRunStatus",
+                "runMode",
+                "createdAt",
+                "updatedAt",
+                "lastRunAt",
+                "containsBillable",
+                "executionToken",
+                "__KEY_data",
+                "__FK_data",
+                (SELECT 
+                  "__KEY_links",
+                  "__FK_links",
+                  (SELECT 
+                      "href",
+                      "__FK_next"
+                  FROM "next" FK "__FK_next"),
+                  (SELECT 
+                      "href" AS "href_u0",
+                      "__FK_self"
+                  FROM "self" FK "__FK_self"),
+                  (SELECT 
+                      "__FK_prev"
+                  FROM "prev" FK "__FK_prev")
+              FROM "links" PK "__KEY_links" FK "__FK_links"),
+                (SELECT 
+                    "@Value",
+                    "__FK_snippetIds"
+                FROM "snippetIds" FK "__FK_snippetIds" ArrayValueAlias "@Value"),
+                (SELECT 
+                    "@Value" AS "@Value_u0",
+                    "__FK_endpointIds"
+                FROM "endpointIds" FK "__FK_endpointIds" ArrayValueAlias "@Value_u0"),
+                (SELECT 
+                    "@Value" AS "@Value_u1",
+                    "__FK_connectorIds"
+                FROM "connectorIds" FK "__FK_connectorIds" ArrayValueAlias "@Value_u1")
+            FROM "data" PK "__KEY_data" FK "__FK_data")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/automations?$(vParams)" );
+
+        [tmp_Auto]:
+        LOAD
+            [id],
+            [ownerId],
+            [name],
+            [spaceId],
+            [state],
+            [duration],
+            [workspace],
+            [lastRun],
+            [lastRunStatus],
+            [runMode],
+            [createdAt],
+            [updatedAt],
+            [lastRunAt],
+            [containsBillable],
+            [executionToken]
+			,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+            ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]);
+        
+//         [connectorIds]:
+//         LOAD	[@Value_u1] AS [@Value_u1],
+//             [__FK_connectorIds] AS [__KEY_data]
+//         RESIDENT RestConnectorMasterTable
+//         WHERE NOT IsNull([__FK_connectorIds]);
+
+        NextURL:
+        Load	
+        [href_u0] AS NextURL
+        Resident RestConnectorMasterTable
+        Where not IsNull([__FK_next]);
+
+        Drop Table RestConnectorMasterTable;
+
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>0;  
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [Auto]:
+    LOAD * RESIDENT tmp_Auto;
+   
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+    [Auto_stat]:
+   	LOAD 
+        Count(id) as CountValue,
+        MAX(createdAt) as MaxValue,
+        MIN(createdAt) as MinValue
+    RESIDENT tmp_Auto;
+    
+    Let TotAuto = TEXT(Peek('CountValue',0,'Auto_stat'));
+    Let VMinAutoCreated = TEXT(Date(Peek('MinValue',0,'Auto_stat'),'DD-MMM-YYYY'));
+    Let VMaxAutoCreated = TEXT(Date(Peek('MaxValue',0,'Auto_stat'),'DD-MMM-YYYY'));
+
+	Trace 'Dropping Temp Tables';
+    Drop Table Auto_stat;
+    Drop Table tmp_Auto;
+
+End Sub
+
+
+Sub loadAutoDContector
+/********************************************
+***  SubRutine to load Automations Data Connectors MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id",
+            "name",
+            "logoSmall",
+            "logoMedium",
+            "logoLarge",
+            "hasWebhooks",
+            "billable",
+            "__FK_data"
+        FROM "data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/automations?$(vParams)" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [AutoDContector]:
+    LOAD	[id],
+        [name],
+        [logoSmall],
+        [logoMedium],
+        [logoLarge],
+        [hasWebhooks],
+        [billable]
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+Sub loadAutoDC
+/********************************************
+***  SubRutine to load Automations MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"name",
+			"spaceId",
+			"ownerId",
+			"isConnected",
+			"connectorId",
+			"createdAt",
+			"updatedAt",
+			"__FK_data"
+		FROM "data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/automation-connections" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[AutoDC]:
+	LOAD	
+		[id],
+		[name],
+		[spaceId],
+		[ownerId],
+		[isConnected],
+		[connectorId],
+		[createdAt],
+		[updatedAt]
+		,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+
+	DROP TABLE RestConnectorMasterTable;
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+End Sub
+
+Sub loadDataFiles
+/********************************************
+***  SubRutine to load Data Files MetaData
+***
+********************************************/
+    //SET vParams = 'includeAllSpaces=TRUE&limit=100';
+    SET vParams = 'includeAllSpaces=TRUE&limit=100&includeFolderStats=true&allowInternalFiles=true';
+    
+    Do
+          trace Parameter $(vParams);
+          RestConnectorMasterTable:
+          SQL SELECT 
+              "__KEY_root",
+              (SELECT 
+                  "id",
+                  "folder",
+                  "name",
+                  "baseName",
+                  "size",
+                  "createdDate",
+                  "modifiedDate",
+                  "spaceId",
+                  "ownerId",
+                  "qri",
+                  "__KEY_data",
+                  "__FK_data",
+                  (SELECT 
+                      "@Value",
+                      "__FK_actions"
+                  FROM "actions" FK "__FK_actions" ArrayValueAlias "@Value")
+              FROM "data" PK "__KEY_data" FK "__FK_data"),
+              (SELECT 
+                  "__KEY_links",
+                  "__FK_links",
+                  (SELECT 
+                      "href",
+                      "__FK_next"
+                  FROM "next" FK "__FK_next"),
+                  (SELECT 
+                      "href" AS "href_u0",
+                      "__FK_self"
+                  FROM "self" FK "__FK_self"),
+                  (SELECT 
+                      "__FK_prev"
+                  FROM "prev" FK "__FK_prev")
+              FROM "links" PK "__KEY_links" FK "__FK_links")
+          FROM JSON (wrap on) "root" PK "__KEY_root"
+          WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/data-files?$(vParams)" );
+
+          [Temp_DF]:
+          LOAD DISTINCT	[id],
+              [folder],
+              [name],
+              [baseName],
+              subfield([baseName], '.', -1) as ext,
+              [size],
+              [spaceId],
+              [createdDate],
+              [modifiedDate],
+              [ownerId],
+              [qri]
+          RESIDENT RestConnectorMasterTable
+          WHERE NOT IsNull([__FK_data]);
+
+          [NextURL]:
+          LOAD	[href] AS NextURL,
+              [__FK_next] AS [__KEY_links]
+          RESIDENT RestConnectorMasterTable
+          WHERE NOT IsNull([href]);
+
+          LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+          LET vNextURLRows = NoOfRows('NextURL');
+
+          Drop Table RestConnectorMasterTable;     
+          Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>0;  
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+    
+    [DataFiles]:
+    LOAD
+    	[id],
+        [folder],
+        [name],
+        [baseName],
+        [ext],
+        [size],
+        [createdDate],
+        [modifiedDate],
+        [spaceId],
+        [ownerId],
+        [qri]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT Temp_DF;
+    
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+    [DF_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(createdDate) as MaxValue,
+        MIN(createdDate) as MinValue,
+        Num((MAX(size)/1024/1024),'#,##0.00') as MAXFileSize,
+        Num((AVG(size)/1024/1024),'#,##0.00') as AVGFileSize,
+        Num((MIN(size)/1024/1024),'#,##0.00') as MINFileSize
+    RESIDENT Temp_DF;
+    
+    Let TotDF = TEXT(Peek('CountValue',0,'DF_stat'));
+    Let VMinDFCreated = TEXT(Date(Peek('MinValue',0,'DF_stat'),'DD-MMM-YYYY'));
+    Let VMaxDFCreated = TEXT(Date(Peek('MaxValue',0,'DF_stat'),'DD-MMM-YYYY'));
+    Let vMAXDFSize = TEXT(Peek('MAXFileSize',0,'DF_stat'));
+    Let vAVGDFSize = TEXT(Peek('AVGFileSize',0,'DF_stat'));
+    Let vMINDFSize = TEXT(Peek('MINFileSize',0,'DF_stat'));
+    
+	Trace 'Dropping Temp Tables';
+    Drop Table Temp_DF;
+    Drop Table DF_stat;
+End Sub
+
+Sub loadDC
+/********************************************
+***  SubRutine to load Data Connections MetaData
+***
+********************************************/
+    SET vParams = 'limit=100';
+
+    Do
+        RestConnectorMasterTable:
+        SQL SELECT 
+            "__KEY_root",
+            (SELECT 
+                "created",
+                "datasourceID",
+                "id",
+                "qArchitecture",
+                "qConnectStatement",
+                "qCredentialsID",
+                "qEngineObjectID",
+                "qID",
+                "qLogOn",
+                "qName",
+                "qSeparateCredentials",
+                "qType",
+                "qri",
+                "tags",
+                "tenant",
+                "updated",
+                "user",
+                "version",
+                "space",
+                "__KEY_data",
+                "__FK_data",
+                (SELECT 
+                    "@Value",
+                    "__FK_privileges"
+                FROM "privileges" FK "__FK_privileges" ArrayValueAlias "@Value"),
+                (SELECT 
+                    "@Value" AS "@Value_u0",
+                    "__FK_tags"
+                FROM "tags" FK "__FK_tags" ArrayValueAlias "@Value_u0")
+            FROM "data" PK "__KEY_data" FK "__FK_data"),
+            (SELECT 
+                  "__KEY_links",
+                  "__FK_links",
+                  (SELECT 
+                      "href",
+                      "__FK_next"
+                  FROM "next" FK "__FK_next"),
+                  (SELECT 
+                      "href" AS "href_u0",
+                      "__FK_self"
+                  FROM "self" FK "__FK_self"),
+                  (SELECT 
+                      "__FK_prev"
+                  FROM "prev" FK "__FK_prev")
+              FROM "links" PK "__KEY_links" FK "__FK_links")
+        FROM JSON (wrap on) "root" PK "__KEY_root"
+        WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/data-connections?$(vParams)" );
+
+        [tmp_DataCon]:
+        LOAD
+            [created],
+            [datasourceID],
+            [id],
+            [qArchitecture],
+            [qConnectStatement],
+            [qCredentialsID],
+            [qEngineObjectID],
+            [qID],
+            [qLogOn],
+            [qName],
+            [qSeparateCredentials],
+            [qType],
+            [qri],
+            [tags],
+            [tenant],
+            [updated],
+            [user] as 'ownerId',
+            [version],
+            [space] as 'spaceId'
+        RESIDENT RestConnectorMasterTable
+        WHERE NOT IsNull([__FK_data]) ;
+
+        NextURL:
+        Load	
+        [href_u0] AS NextURL
+        Resident RestConnectorMasterTable
+        Where not IsNull([__FK_next]);
+
+        Drop Table RestConnectorMasterTable;
+
+        LET vParams = SubField(Peek('NextURL',0,'NextURL'),'?',-1);
+        LET vNextURLRows = NoOfRows('NextURL');
+        Drop Table NextURL;
+
+    Loop while $(vNextURLRows)>0;  
+
+    QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [DataCon]:
+    LOAD 
+      *
+      ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+      ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT tmp_DataCon;
+
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [DC_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(created) as MaxValue,
+        MIN(created) as MinValue
+    RESIDENT tmp_DataCon;
+    
+    Let TotDConn = TEXT(Peek('CountValue',0,'DC_stat'));
+    Let VMinDCCreated = TEXT(Date(Peek('MinValue',0,'DC_stat'),'DD-MMM-YYYY'));
+    Let VMaxDCCreated = TEXT(Date(Peek('MaxValue',0,'DC_stat'),'DD-MMM-YYYY'));
+
+    Drop Table tmp_DataCon;
+    Drop Table DC_stat;
+End Sub
+
+
+Sub loadExported
+/********************************************
+***  SubRutine to load Exported MetaData
+***
+********************************************/
+  	RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id" AS "id_u0",
+            "contentType",
+            "eventId",
+            "eventTime",
+            "eventType",
+            "source",
+            "tenantId",
+            "userId",
+            "sessionId",
+            "__KEY_data",
+            "__FK_data",
+            (SELECT 
+                "_resourcetype",
+                "dataExported",
+                "dataReduced",
+                "exportedDate",
+                "id",
+                "name",
+                "owner",
+                "ownerId",
+                "spaceId",
+                "usage",
+                "__KEY_data_u0",
+                "__FK_data_u0",
+                (SELECT 
+                    "__FK_custom"
+                FROM "custom" FK "__FK_custom")
+            FROM "data" PK "__KEY_data_u0" FK "__FK_data_u0")
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/audits?EventType=com.qlik.app.exported&limit=100");
+
+	QUALIFY *; // UnQualifies all fields in subsequent loads
+
+    [expda]:
+    LOAD	[_resourcetype],
+        [dataExported],
+        [dataReduced],
+        [exportedDate],
+        [id],
+        [name],
+        [owner],
+        [ownerId],
+        [spaceId],
+        [usage],
+        [__KEY_data_u0],
+        [__FK_data_u0] AS [__KEY_data]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data_u0]);
+
+    DROP TABLE RestConnectorMasterTable;
+    UnQUALIFY *; // UnQualifies all fields in subsequent loads
+
+End Sub
+
+Sub loadsession
+/********************************************
+***  SubRutine to load External URL MetaData
+***
+********************************************/
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "__KEY_root",
+        (SELECT 
+            "id",
+            "contentType",
+            "eventId",
+            "eventTime",
+            "eventType",
+            "source",
+            "tenantId",
+            "userId",
+            "__KEY_data",
+            "__FK_data"
+        FROM "data" PK "__KEY_data" FK "__FK_data")
+    FROM JSON (wrap on) "root" PK "__KEY_root"
+    WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/audits?EventType=com.qlik.user-session.begin&limit=100");
+
+    [Session_tmp]:
+    LOAD	
+        [id],
+        [contentType],
+        [eventId],
+        [eventTime],
+        [eventType],
+        [source],
+        [tenantId],
+        [userId] as ownerId
+        //,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT RestConnectorMasterTable
+    WHERE NOT IsNull([__FK_data]);
+    
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [Session]:
+    LOAD	
+        *
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+    RESIDENT Session_tmp;
+
+	UnQUALIFY *; // UnQualifies all fields in subsequent loads
+    DROP TABLE RestConnectorMasterTable;    
+    Drop Table Session_tmp;
+End Sub
+
+Sub loadPredictD
+/********************************************
+***  SubRutine to load Predict Deployment MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"type",
+			"id" AS "id_u0",
+			"__KEY_data",
+			"__FK_data",
+			(SELECT 
+				"id",
+				"createdAt",
+				"updatedAt",
+				"name",
+				"spaceId",
+				"description",
+				"modelId",
+				"enablePredictions",
+				"deprecated",
+				"createdBy",
+				"ownerId",
+				"errorMessage",
+				"__KEY_attributes",
+				"__FK_attributes",
+				(SELECT 
+					"@Value",
+					"__FK_deployedModelIds"
+				FROM "deployedModelIds" FK "__FK_deployedModelIds" ArrayValueAlias "@Value")
+			FROM "attributes" PK "__KEY_attributes" FK "__FK_attributes")
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION (URL "https://$(vu_tenant_fqdn)/api/v1/ml/deployments" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [AML_Dep]:
+	LOAD	
+		[id],
+		[createdAt],
+		[updatedAt],
+		[name],
+		[spaceId],
+		[description],
+		[modelId],
+		[enablePredictions],
+		[deprecated],
+		[createdBy],
+		[ownerId]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_attributes]);
+ 
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+    [AML_Dep_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        if(isnull(MAX(createdAt)),0) as MaxValue,
+        if(isnull(MIN(createdAt)),0) as MinValue
+    RESIDENT RestConnectorMasterTable;
+    
+    Let TotAML_Dep = TEXT(Peek('CountValue',0,'AML_Dep_stat'));
+    Let VMinAMLDCreated = TEXT(Date(Peek('MinValue',0,'AML_Dep_stat'),'DD-MMM-YYYY'));
+    Let VMaxAMLDCreated = TEXT(Date(Peek('MaxValue',0,'AML_Dep_stat'),'DD-MMM-YYYY'));
+
+    Drop Table AML_Dep_stat;
+    DROP TABLE RestConnectorMasterTable;
+End Sub
+
+Sub loadPredictExp
+/********************************************
+***  SubRutine to load Predict Experiments MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"type",
+			"id" AS "id_u0",
+			"__KEY_data",
+			"__FK_data",
+			(SELECT 
+				"id",
+				"createdAt",
+				"updatedAt",
+				"tenantId",
+				"ownerId",
+				"spaceId",
+				"name",
+				"description",
+				"__FK_attributes"
+			FROM "attributes" FK "__FK_attributes")
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/ml/experiments" );
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+	
+	[AML_Exp]:
+	LOAD 
+		[id],
+		[createdAt],
+		[updatedAt],
+		[tenantId],
+		[ownerId],
+		[spaceId],
+		[name],
+		[description]
+        ,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_attributes]);
+
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+    
+    [AML_Exp_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(createdAt) as MaxValue,
+        MIN(createdAt) as MinValue
+    RESIDENT RestConnectorMasterTable;
+    
+    Let TotAML_Expo = TEXT(Peek('CountValue',0,'AML_Exp_stat'));
+    Let VMinAMLECreated = TEXT(Date(Peek('MinValue',0,'AML_Exp_stat'),'DD-MMM-YYYY'));
+    Let VMaxAMLECreated = TEXT(Date(Peek('MaxValue',0,'AML_Exp_stat'),'DD-MMM-YYYY'));
+
+    Drop Table AML_Exp_stat;
+    DROP TABLE RestConnectorMasterTable;
+End Sub
+
+Sub loadReloads
+/********************************************
+***  SubRutine to load Reloads MetaData
+***
+********************************************/
+	RestConnectorMasterTable:
+	SQL SELECT 
+		"__KEY_root",
+		(SELECT 
+			"id",
+			"appId",
+			"tenantId",
+			"userId",
+			"type",
+			"status",
+			"partial",
+			"creationTime",
+			"startTime",
+			"endTime",
+			"engineTime",
+			"__KEY_data",
+			"__FK_data"
+		FROM "data" PK "__KEY_data" FK "__FK_data")
+	FROM JSON (wrap on) "root" PK "__KEY_root"
+	WITH CONNECTION ( URL "https://$(vu_tenant_fqdn)/api/v1/reloads" );
+
+	[Reloads_tmp]:
+	LOAD	
+		[id],
+		[appId],
+		[tenantId],
+		[userId],
+        [userId] as 'ownerId',
+		[type],
+		[status],
+		[partial],
+		[creationTime],
+		[startTime],
+		[endTime],
+		[engineTime]
+	RESIDENT RestConnectorMasterTable
+	WHERE NOT IsNull([__FK_data]);
+   
+    [Reloads_stat]:
+   	LOAD 
+        COUNT(id) as CountValue,
+        MAX(creationTime) as MaxValue,
+        MIN(creationTime) as MinValue
+    RESIDENT Reloads_tmp;
+       
+    Let vTotReload = TEXT(Peek('CountValue',0,'Reloads_stat'));
+    Let VMinReloadCreated = TEXT(Date(Peek('MinValue',0,'Reloads_stat'),'DD-MMM-YYYY'));
+    Let VMaxReloadCreated = TEXT(Date(Peek('MaxValue',0,'Reloads_stat'),'DD-MMM-YYYY'));
+
+	QUALIFY *; // Qualifies all fields in subsequent loads
+
+    [Reloads]:
+   	LOAD *
+        //,ApplyMap('Map_Spaces', spaceId, 'Unknown') as Space_Name
+        ,ApplyMap('Map_Users', ownerId, 'Unknown') as User_Name
+        ,ApplyMap('Map_App', appId, 'Unknown') as App_Name
+    RESIDENT Reloads_tmp;
+    
+	UNQUALIFY *; // UnQualifies all fields in subsequent loads
+
+	TRACE 'Drop Tables';
+	DROP TABLE Reloads_stat;
+    DROP TABLE Reloads_tmp;
+    DROP TABLE RestConnectorMasterTable;
+End Sub
+
+///$tab Call Subrutines
+Let Load_Time = Now(1);
+Trace Start - Loading Inventory processing on $(vu_tenant_fqdn);
+Let Msg='Loading Time  $(Load_Time)';
+Trace $(Msg);
+
+LIB CONNECT TO '$(vRestPaginationConnector)';
+
+Trace  $(VloadMode) ;
+
+If ('$(VloadMode)'='Test' or '$(VloadMode)'='Configuration' or '$(VloadMode)'='Complete') then
+  //Load Core SubRutines
+  For Each sub_routine in 'LoadAllocation','loadUsers','loadSpaces','LoadTenant','loadLicense'
+      Call Exe_sub(sub_routine)
+      sleep 5;
+  Next sub_routine
+End If
+
+sleep 50;
+
+If ('$(VloadMode)'='Complete') then
+  //Load Core SubRutines
+  For Each sub_routine in 'loadAuto','loadAutoDC','loadAutoDContector','loadDataFiles','loadDC','loadExported','loadsession','loadPredictD','loadPredictExp', 'loadApplications','loadPrepareData','loadReloads','loadDataProducts'
+      Call Exe_sub(sub_routine)
+      sleep 5;
+  Next sub_routine
+End If
+
+sleep 10;
+
+If ('$(VloadMode)'='Complete' or '$(VloadMode)'='Configuration' ) then
+  //Load Config SubRutines
+  For Each sub_routine in 'loadDIProject','loadNotes','loadLicEnt','loadRoles','loadCollection','loadDAlert','loadApi','loadCSP','loadOath','loadThemes','loadWebi','loadExt','loadIDP','loadKB','loadAssistants','loadTask','loadWebh','loadGlo','loadRpt','loadSubscriptions','loadExtURL','loadBanner','loadGroups','loadIPConfig'
+      Call Exe_sub(sub_routine)
+      sleep 5;
+  Next sub_routine
+End If
+
+If ('$(vExport)') then
+  //Export
+	call Exe_sub('ExportTables')
+End If
+
+Let load_end = Now(1);
+Let load_duration = Num(Ceil((load_end-Load_Time)*86400),'#,##0');
+Let load_msg = 'The loading was completed at $(load_end), Time:$(load_duration) seconds.';
+Trace $(load_msg);
+
+
+
+SalesData:
+LOAD * INLINE [
+    Product_ID, Product_Name, Sales_Date, Quantity, Unit_Price
+    101, Widget A, 2025-01-15, 10, 25.50
+    102, Widget B, 2025-01-16, 5, 100.00
+    101, Widget A, 2025-02-01, 2, 25.50
+    103, Widget C, 2025-02-05, 8, 45.00
+];
+///$tab Joins Users
+// Unqualify *;
+
+// [Users_temp_6db9df4d-51b9-0c82-dd40-0ed0dd46]:
+// LOAD
+// 	[Users.id] AS [id-Users.id],
+//     [Users.id],
+// 	[Users.tenantId],
+// 	[Users.status],
+// 	[Users.subject],
+// 	[Users.name],
+// 	[Users.email],
+// 	[Users.picture],
+// 	[Users.createdAt],
+// 	[Users.lastUpdatedAt],
+// 	[Users.created],
+// 	[Users.lastUpdated],
+// 	[Users.__KEY_data] AS [-_KEY_data-unitsUsed]
+// RESIDENT [Users];
+// DROP TABLE [Users];
+
+// [DIP_temp_42bdf863-a37f-8b6e-02f7-6dd6afa8]:
+// LOAD
+// 	[DIP.id],
+// 	[DIP.name],
+// 	[DIP.description],
+// 	[DIP.ownerId] AS [id-Users.id],
+// 	[DIP.spaceId] AS [id-Space.id]
+// RESIDENT [DIP];
+// DROP TABLE [DIP];
+
+// [allotments_temp_5312e615-f214-6ca9-1cf5-403bee8c]:
+// LOAD
+// 	[allotments.name],
+// 	[allotments.usageClass],
+// 	[allotments.units],
+// 	[allotments.unitsUsed] AS [-_KEY_data-unitsUsed],
+// 	[allotments.overage]
+// RESIDENT [allotments];
+// DROP TABLE [allotments];
+
+// [License_temp_d2b68044-4b4e-6d38-166e-a9126752]:
+// LOAD
+// 	[License.licenseNumber],
+// 	[License.licenseKey],
+// 	[License.parentLicenseNumber],
+// 	[License.capabilityBankId],
+// 	[License.valid_u0],
+// 	[License.status],
+// 	[License.origin],
+// 	Timestamp([License.updated] ) AS [License.updated],
+// 	[License.changeTime],
+// 	[License.latestValidTime],
+// 	[License.trial],
+// 	[License.licenseType],
+// 	[License.product],
+// 	[License.secondaryNumber],
+// 	'-' AS [Extra_29c614cb-c51e-468a-f21f-a20a0f7b]
+// RESIDENT [License];
+// DROP TABLE [License];
+// DROP FIELD [Extra_29c614cb-c51e-468a-f21f-a20a0f7b];
+
+// [Entitlement_temp_61a93ef3-6e4c-0b1f-5457-fc4786a4]:
+// LOAD
+// 	[Entitlement.blocked],
+// 	[Entitlement.capacityLimit],
+// 	[Entitlement.closeToOverage],
+// 	[Entitlement.consumptionReportId],
+// 	[Entitlement.customerFacing],
+// 	[Entitlement.globalUsage],
+// 	[Entitlement.guardrailLimit],
+// 	[Entitlement.localUsage],
+// 	[Entitlement.overage],
+// 	Timestamp(Timestamp#([Entitlement.periodEnd], 'YYYY-MM-DDThh:mm:ssK') ) AS [Entitlement.periodEnd],
+// 	Timestamp(Timestamp#([Entitlement.periodStart], 'YYYY-MM-DDThh:mm:ssK') ) AS [Entitlement.periodStart],
+// 	[Entitlement.periodType],
+// 	[Entitlement.resourceAction],
+// 	[Entitlement.resourceId],
+// 	[Entitlement.resourceType_u0],
+// 	[Entitlement.scopeMapping],
+// 	[Entitlement.taskDescription],
+// 	[Entitlement.taskName],
+// 	[Entitlement.tenantId],
+// 	[Entitlement.updateTime],
+// 	'-' AS [Extra_44720508-41fc-baa1-0ef6-2b95ada4]
+// RESIDENT [Entitlement];
+// DROP TABLE [Entitlement];
+// DROP FIELD [Extra_44720508-41fc-baa1-0ef6-2b95ada4];
+
+// [Notes_temp_43675c95-b7f2-f59b-cc9b-44a007a7]:
+// LOAD
+// 	[Notes.title],
+// 	[Notes.spaceId],
+// 	[Notes.ownerId] AS [id-Users.id],
+// 	[Notes.description],
+// 	[Notes.createdTime],
+// 	[Notes.lastModifiedTime],
+// 	[Notes.tenantId],
+// 	[Notes.public],
+// 	[Notes.id]
+// RESIDENT [Notes];
+// DROP TABLE [Notes];
+
+// [Applications_temp_1932240e-6fac-e404-1d4e-3931d3fc]:
+// LOAD
+// 	[Applications.id],
+// 	[Applications.name],
+// 	[Applications.description],
+// 	Timestamp([Applications.lastReloadTime] ) AS [Applications.lastReloadTime],
+// 	[Applications.createdDate],
+// 	[Applications.modifiedDate],
+// 	[Applications.dynamicColor],
+// 	[Applications.hasSectionAccess],
+// 	[Applications.isDirectQueryMode],
+// 	[Applications._resourcetype],
+// 	[Applications.originAppId],
+// 	[Applications.owner],
+// 	[Applications.ownerId] AS [id-Users.id],
+// 	[Applications.Users.id],
+// 	Timestamp([Applications.publishTime] ) AS [Applications.publishTime],
+// 	[Applications.published],
+// 	[Applications.spaceId],
+// 	[Applications.thumbnail],
+// 	[Applications.usage],
+// 	[Applications.appId],
+// 	[Applications.appType],
+// 	[Applications.dataSetCount],
+// 	[Applications.dataStoreName],
+// 	[Applications.dataStoreType],
+// 	[Applications.reloadOnly],
+// 	[Applications.technicalDescription],
+// 	[Applications.technicalName],
+// 	[Applications.version],
+// 	[Applications.qri],
+// 	[Applications.secureQri],
+// 	[Applications.sourceSystemId],
+// 	[Applications.type],
+// 	[Applications.appFile],
+// 	[Applications.appMemory],
+// 	[Applications.usedBy]
+// RESIDENT [Applications];
+// DROP TABLE [Applications];
+
+// [Scripts_temp_76dba5b3-2cc4-ef22-cac1-6c53e936]:
+// LOAD
+// 	[Scripts.id],
+// 	[Scripts.name],
+// 	[Scripts.description],
+// 	Timestamp(Timestamp#([Scripts.lastReloadTime], 'YYYY-MM-DDThh:mm:ss.fffK') ) AS [Scripts.lastReloadTime],
+// 	[Scripts.createdDate],
+// 	[Scripts.modifiedDate],
+// 	[Scripts.dynamicColor],
+// 	[Scripts.hasSectionAccess],
+// 	[Scripts.isDirectQueryMode],
+// 	[Scripts._resourcetype],
+// 	[Scripts.originAppId],
+// 	[Scripts.owner],
+// 	[Scripts.ownerId] AS [id-Users.id],
+// 	[Scripts.publishTime],
+// 	[Scripts.published],
+// 	[Scripts.spaceId],
+// 	[Scripts.thumbnail],
+// 	[Scripts.usage],
+// 	[Scripts.appId],
+// 	[Scripts.appType],
+// 	[Scripts.dataSetCount],
+// 	[Scripts.dataStoreName],
+// 	[Scripts.dataStoreType],
+// 	[Scripts.reloadOnly],
+// 	[Scripts.technicalDescription],
+// 	[Scripts.technicalName],
+// 	[Scripts.version],
+// 	[Scripts.qri],
+// 	[Scripts.secureQri],
+// 	[Scripts.sourceSystemId],
+// 	[Scripts.type],
+// 	[Scripts.appFile],
+// 	[Scripts.appMemory],
+// 	[Scripts.usedBy]
+// RESIDENT [Scripts];
+// DROP TABLE [Scripts];
+
+// [Assistants_temp_b3bcfc65-9110-ff78-1e5d-85c65937]:
+// LOAD
+// 	[Assistants.id],
+// 	[Assistants.name],
+// 	[Assistants.title],
+// 	[Assistants.description],
+// 	[Assistants.ownerId],
+// 	[Assistants.createdBy] AS [id-Users.id],
+// 	[Assistants.createdAt],
+// 	[Assistants.updatedBy],
+// 	[Assistants.updatedAt],
+// 	[Assistants.tenantId],
+// 	[Assistants.spaceId],
+// 	[Assistants.welcomeMessage]
+// RESIDENT [Assistants];
+// DROP TABLE [Assistants];
+
+// [Groups_temp_2240cba2-7604-e897-fc66-aac69a0f]:
+// LOAD
+// 	[Groups.id],
+// 	[Groups.tenantId],
+// 	[Groups.createdAt],
+// 	[Groups.lastUpdatedAt],
+// 	[Groups.name],
+// 	[Groups.status],
+// 	[Groups.providerType],
+// 	[Groups.createdBy] AS [id-Users.id],
+// 	[Groups.updatedBy]
+// RESIDENT [Groups];
+// DROP TABLE [Groups];
+
+// [Collections_temp_89255156-45f5-df5a-d178-69eb6c26]:
+// LOAD
+// 	[Collections.name],
+// 	[Collections.type],
+// 	[Collections.id],
+// 	[Collections.createdAt],
+// 	[Collections.updatedAt],
+// 	[Collections.creatorId] AS [id-Users.id],
+// 	[Collections.updaterId],
+// 	[Collections.tenantId],
+// 	[Collections.itemCount],
+// 	[Collections.full]
+// RESIDENT [Collections];
+// DROP TABLE [Collections];
+
+// [Auto_temp_7a1ade79-0547-b430-f329-80cd8a1c]:
+// LOAD
+// 	[Auto.id],
+// 	[Auto.ownerId] AS [id-Users.id],
+// 	[Auto.name],
+// 	[Auto.spaceId],
+// 	[Auto.state],
+// 	[Auto.duration],
+// 	[Auto.workspace],
+// 	[Auto.lastRun],
+// 	[Auto.lastRunStatus],
+// 	[Auto.runMode],
+// 	[Auto.createdAt],
+// 	[Auto.updatedAt],
+// 	[Auto.lastRunAt],
+// 	[Auto.containsBillable],
+// 	[Auto.executionToken]
+// RESIDENT [Auto];
+// DROP TABLE [Auto];
+
+// [AutoDC_temp_4c8a906d-6011-e2f4-9695-d46d6a1d]:
+// LOAD
+// 	[AutoDC.id],
+// 	[AutoDC.name],
+// 	[AutoDC.spaceId],
+// 	[AutoDC.ownerId] AS [id-Users.id],
+// 	[AutoDC.isConnected],
+// 	[AutoDC.connectorId],
+// 	[AutoDC.createdAt],
+// 	[AutoDC.updatedAt]
+// RESIDENT [AutoDC];
+// DROP TABLE [AutoDC];
+
+// [DataFiles_temp_145f3784-9a15-35df-a1c5-584734dc]:
+// LOAD
+// 	[DataFiles.id],
+// 	[DataFiles.folder],
+// 	[DataFiles.name],
+// 	[DataFiles.baseName],
+// 	[DataFiles.size],
+// 	[DataFiles.createdDate],
+// 	[DataFiles.modifiedDate],
+// 	[DataFiles.ownerId] AS [id-Users.id],
+// 	[DataFiles.qri]
+// RESIDENT [DataFiles];
+// DROP TABLE [DataFiles];
+
+// [DataCon_temp_da82b1e9-c480-b11c-db85-655a5f3b]:
+// LOAD
+// 	[DataCon.created],
+// 	[DataCon.datasourceID],
+// 	[DataCon.id],
+// 	[DataCon.qArchitecture],
+// 	[DataCon.qConnectStatement],
+// 	[DataCon.qCredentialsID],
+// 	[DataCon.qEngineObjectID],
+// 	[DataCon.qID],
+// 	[DataCon.qLogOn],
+// 	[DataCon.qName],
+// 	[DataCon.qSeparateCredentials],
+// 	[DataCon.qType],
+// 	[DataCon.qri],
+// 	[DataCon.tags],
+// 	[DataCon.tenant],
+// 	[DataCon.updated],
+// 	[DataCon.user] AS [id-Users.id],
+// 	[DataCon.version],
+// 	[DataCon.space]
+// RESIDENT [DataCon];
+// DROP TABLE [DataCon];
+
+// [DataAlerts_temp_c496ed9e-c078-59ab-57d4-ce2f26fd]:
+// LOAD
+// 	[DataAlerts.absoluteLastScan],
+// 	[DataAlerts.absoluteLastTrigger],
+// 	[DataAlerts.accessMode],
+// 	[DataAlerts.appId],
+// 	[DataAlerts.bookmarkId],
+// 	[DataAlerts.conditionId],
+// 	[DataAlerts.conditionResponse],
+// 	[DataAlerts.dateCreated],
+// 	[DataAlerts.enabled_u0],
+// 	[DataAlerts.errorStatus],
+// 	[DataAlerts.id],
+// 	[DataAlerts.lastExecutionStatus],
+// 	[DataAlerts.lastScan],
+// 	[DataAlerts.lastTrigger],
+// 	[DataAlerts.lastUpdated],
+// 	[DataAlerts.name],
+// 	[DataAlerts.ownerId] AS [id-Users.id],
+// 	[DataAlerts.ownerName],
+// 	[DataAlerts.sheetId],
+// 	[DataAlerts.status],
+// 	[DataAlerts.subscriptionIds],
+// 	[DataAlerts.tenantId],
+// 	[DataAlerts.triggerStats],
+// 	[DataAlerts.triggerType]
+// RESIDENT [DataAlerts];
+// DROP TABLE [DataAlerts];
+
+// [Reloads_temp_3a5edba9-def4-59f4-fac3-ada61825]:
+// LOAD
+// 	[Reloads.id],
+// 	[Reloads.appId],
+// 	[Reloads.tenantId],
+// 	[Reloads.userId] AS [id-Users.id],
+// 	[Reloads.type],
+// 	[Reloads.status],
+// 	[Reloads.partial],
+// 	[Reloads.creationTime],
+// 	[Reloads.startTime],
+// 	[Reloads.endTime],
+// 	[Reloads.engineTime]
+// RESIDENT [Reloads];
+// DROP TABLE [Reloads];
+
+// [Web_int_temp_b6bdb61e-c7ca-7d3b-2dec-7b2e1ef9]:
+// LOAD
+// 	[Web_int.id],
+// 	[Web_int.tenantId],
+// 	[Web_int.name],
+// 	[Web_int.createdBy] AS [id-Users.id],
+// 	[Web_int.created],
+// 	[Web_int.lastUpdated],
+// 	[Web_int.__KEY_data],
+// 	[Web_int.__FK_data]
+// RESIDENT [Web_int];
+// DROP TABLE [Web_int];
+
+// [Subscriptions_temp_50d764dd-07a7-279d-9fa9-215f53fd]:
+// LOAD
+// 	[Subscriptions.appId_u2],
+// 	[Subscriptions.appName],
+// 	[Subscriptions.createdBy],
+// 	[Subscriptions.dateCreated],
+// 	[Subscriptions.description_u0],
+// 	[Subscriptions.emailContent],
+// 	[Subscriptions.enabledBySystem_u0],
+// 	[Subscriptions.id_u0],
+// 	[Subscriptions.lastExecutionDate],
+// 	[Subscriptions.lastRun],
+// 	[Subscriptions.lastUpdated],
+// 	[Subscriptions.name_u4],
+// 	[Subscriptions.owner] AS [id-Users.id],
+// 	[Subscriptions.ownerName],
+// 	[Subscriptions.startTime],
+// 	[Subscriptions.statusCode],
+// 	[Subscriptions.subType_u0],
+// 	[Subscriptions.tenant],
+// 	[Subscriptions.type_u1],
+// 	[Subscriptions.updatedBy],
+// 	[Subscriptions.hasCycleFields],
+// 	[Subscriptions.latestExecutionFilesURL],
+// 	[Subscriptions.latestExecutionURL],
+// 	[Subscriptions.persistentBookmarkIncludeVariables],
+// 	[Subscriptions.traceid],
+// 	[Subscriptions.distributionListId],
+// 	[Subscriptions.enabledByUser_u0],
+// 	[Subscriptions.failedExecutionsCount],
+// 	[Subscriptions.multiInsightURLs],
+// 	[Subscriptions.spaceId],
+// 	[Subscriptions.templateId_u0],
+// 	[Subscriptions.enabled_u1],
+// 	[Subscriptions.executeOnCreation],
+// 	[Subscriptions.insightDirectURL],
+// 	[Subscriptions.insightFallbackURL],
+// 	[Subscriptions.insightID_u0],
+// 	[Subscriptions.lastViewed],
+// 	[Subscriptions.thumbnail],
+// 	[Subscriptions.__KEY_sharingTasks],
+// 	[Subscriptions.__FK_sharingTasks]
+// RESIDENT [Subscriptions];
+// DROP TABLE [Subscriptions];
+
+// [ExURL_temp_5c97a3fc-0a5e-3db8-f8ff-0c242af1]:
+// LOAD
+// 	[ExURL.id],
+// 	[ExURL.index],
+// 	[ExURL.name],
+// 	[ExURL.link],
+// 	[ExURL.spaceId],
+// 	[ExURL.description],
+// 	[ExURL.linkType],
+// 	[ExURL.ownerId] AS [id-Users.id],
+// 	[ExURL.createdDate],
+// 	[ExURL.modifiedDate]
+// RESIDENT [ExURL];
+// DROP TABLE [ExURL];
+
+// [AML_Dep_temp_82053cfa-c969-9603-f47a-9cca6a4f]:
+// LOAD
+// 	[AML_Dep.id],
+// 	[AML_Dep.createdAt],
+// 	[AML_Dep.updatedAt],
+// 	[AML_Dep.name],
+// 	[AML_Dep.spaceId],
+// 	[AML_Dep.description],
+// 	[AML_Dep.modelId],
+// 	[AML_Dep.enablePredictions],
+// 	[AML_Dep.deprecated],
+// 	[AML_Dep.createdBy],
+// 	[AML_Dep.ownerId] AS [id-Users.id]
+// RESIDENT [AML_Dep];
+// DROP TABLE [AML_Dep];
+
+// [AML_Exp_temp_28b941bc-1838-bc6f-77bf-20fbcce8]:
+// LOAD
+// 	[AML_Exp.id],
+// 	[AML_Exp.createdAt],
+// 	[AML_Exp.updatedAt],
+// 	[AML_Exp.tenantId],
+// 	[AML_Exp.ownerId] AS [id-Users.id],
+// 	[AML_Exp.spaceId],
+// 	[AML_Exp.name],
+// 	[AML_Exp.description]
+// RESIDENT [AML_Exp];
+// DROP TABLE [AML_Exp];
+
+// [expda_temp_09d2922b-9d61-8524-dd9b-da2fc8ed]:
+// LOAD
+// 	[expda._resourcetype],
+// 	[expda.dataExported],
+// 	[expda.dataReduced],
+// 	[expda.exportedDate],
+// 	[expda.id],
+// 	[expda.name],
+// 	[expda.owner],
+// 	[expda.ownerId] AS [id-Users.id],
+// 	[expda.spaceId],
+// 	[expda.usage],
+// 	[expda.__KEY_data_u0],
+// 	[expda.__KEY_data]
+// RESIDENT [expda];
+// DROP TABLE [expda];
+
+// [Themes_temp_599c949f-fb64-c573-bc2e-f41c068a]:
+// LOAD
+// 	[Themes.id],
+// 	[Themes.tenantId],
+// 	[Themes.userId] AS [id-Users.id],
+// 	[Themes.name],
+// 	[Themes.type],
+// 	[Themes.qextFilename],
+// 	[Themes.qextVersion],
+// 	[Themes.description],
+// 	[Themes.version],
+// 	[Themes.author],
+// 	[Themes.createdAt],
+// 	[Themes.updatedAt]
+// RESIDENT [Themes];
+// DROP TABLE [Themes];
+
+// [Task_temp_e0a4a977-5dc4-edaf-7650-a1f2e201]:
+// LOAD
+// 	[Task.id],
+// 	[Task.partial],
+// 	[Task.autoReload],
+// 	[Task.autoReloadPartial],
+// 	[Task.tenantId],
+// 	[Task.userId] AS [id-Users.id],
+// 	[Task.appId],
+// 	[Task.fortressId],
+// 	[Task.log],
+// 	[Task.disabledCode],
+// 	[Task.spaceId],
+// 	[Task.startDateTime],
+// 	[Task.state],
+// 	[Task.timeZone],
+// 	[Task.nextExecutionTime],
+// 	[Task.lastExecutionTime],
+// 	[Task.migrated]
+// RESIDENT [Task];
+// DROP TABLE [Task];
+
+// [App_Reports_temp_c1e062a8-1df5-dbc9-b8e1-0b6b85e2]:
+// LOAD
+// 	[App_Reports.id],
+// 	[App_Reports.name],
+// 	[App_Reports.type],
+// 	[App_Reports.ownerId] AS [id-Users.id],
+// 	[App_Reports.createdAt],
+// 	[App_Reports.updatedAt],
+// 	[App_Reports.createdBy],
+// 	[App_Reports.updatedBy],
+// 	[App_Reports.sourceAppId],
+// 	[App_Reports.sourceAppName],
+// 	[App_Reports.metadataVersion],
+// 	[App_Reports.__KEY_data],
+// 	[App_Reports.__FK_data]
+// RESIDENT [App_Reports];
+// DROP TABLE [App_Reports];
+
+// [Webh_temp_074358c6-d8be-5347-e4d1-bdc88ad2]:
+// LOAD
+// 	[Webh.id],
+// 	[Webh.createdAt],
+// 	[Webh.updatedAt],
+// 	[Webh.createdByUserId] AS [id-Users.id],
+// 	[Webh.updatedByUserId],
+// 	[Webh.ownerId],
+// 	[Webh.origin],
+// 	[Webh.name],
+// 	[Webh.description],
+// 	[Webh.url],
+// 	[Webh.enabled],
+// 	[Webh.level],
+// 	[Webh.filter],
+// 	[Webh.checkCertificateRevocation]
+// RESIDENT [Webh];
+// DROP TABLE [Webh];
+
+// [Api_key_temp_fb832aaf-525e-11ba-b304-c854e9b9]:
+// LOAD
+// 	[Api_key.id],
+// 	[Api_key.tenantId],
+// 	[Api_key.description],
+// 	[Api_key.sub],
+// 	[Api_key.subType],
+// 	[Api_key.expiry],
+// 	[Api_key.status],
+// 	[Api_key.createdByUser] AS [id-Users.id]
+// RESIDENT [Api_key];
+// DROP TABLE [Api_key];
+
+// [Oath_temp_832bbddd-1d22-f7f8-ce94-4325ee08]:
+// LOAD
+// 	[Oath.appType],
+// 	[Oath.clientId],
+// 	[Oath.clientName],
+// 	[Oath.createdAt],
+// 	[Oath.ownerId] AS [id-Users.id],
+// 	[Oath.updatedAt]
+// RESIDENT [Oath];
+// DROP TABLE [Oath];
+
+// [Session_temp_63c111a5-9d6b-18c9-a14d-2e496e01]:
+// LOAD
+// 	[Session.id],
+// 	[Session.contentType],
+// 	[Session.eventId],
+// 	[Session.eventTime],
+// 	[Session.eventType],
+// 	[Session.source],
+// 	[Session.tenantId],
+// 	[Session.userId] AS [id-Users.id]
+// RESIDENT [Session];
+// DROP TABLE [Session];
+
+// [Glossaries_temp_50c71a32-b5f6-0d97-dbc1-ee372c87]:
+// LOAD
+// 	[Glossaries.id],
+// 	[Glossaries.name],
+// 	[Glossaries.description],
+// 	[Glossaries.tags],
+// 	[Glossaries.ownerId] AS [id-Users.id],
+// 	[Glossaries.createdBy],
+// 	[Glossaries.createdAt],
+// 	[Glossaries.updatedBy],
+// 	[Glossaries.updatedAt],
+// 	[Glossaries.spaceId],
+// 	[Glossaries.overview],
+// 	[Glossaries.__KEY_data],
+// 	[Glossaries.__FK_data]
+// RESIDENT [Glossaries];
+// DROP TABLE [Glossaries];
+
+// [KB_temp_fa8b9935-cac5-ce98-297a-11b3b5ee]:
+// LOAD
+// 	[KB.__KEY_data],
+// 	[KB.id],
+// 	[KB.tenantId],
+// 	[KB.spaceId],
+// 	[KB.ownerId] AS [id-Users.id],
+// 	[KB.name],
+// 	[KB.description],
+// 	[KB.createdBy],
+// 	[KB.createdAt],
+// 	[KB.updatedBy],
+// 	[KB.updatedAt],
+// 	[KB.lastIndexedAt],
+// 	[KB.fileCount],
+// 	[KB.effectivePages],
+// 	[KB.textSize],
+// 	[KB.fileSize]
+// RESIDENT [KB];
+// DROP TABLE [KB];
+
+// [DataFlow_temp_ed423ac8-c1b5-e84b-188d-7f00a22c]:
+// LOAD
+// 	[DataFlow.id],
+// 	[DataFlow.name],
+// 	[DataFlow.description],
+// 	[DataFlow.lastReloadTime],
+// 	[DataFlow.createdDate],
+// 	[DataFlow.modifiedDate],
+// 	[DataFlow.dynamicColor],
+// 	[DataFlow.hasSectionAccess],
+// 	[DataFlow.isDirectQueryMode],
+// 	[DataFlow._resourcetype],
+// 	[DataFlow.originAppId],
+// 	[DataFlow.owner],
+// 	[DataFlow.ownerId] AS [id-Users.id],
+// 	[DataFlow.publishTime],
+// 	[DataFlow.published],
+// 	[DataFlow.spaceId],
+// 	[DataFlow.thumbnail],
+// 	[DataFlow.usage],
+// 	[DataFlow.appId],
+// 	[DataFlow.appType],
+// 	[DataFlow.dataSetCount],
+// 	[DataFlow.dataStoreName],
+// 	[DataFlow.dataStoreType],
+// 	[DataFlow.reloadOnly],
+// 	[DataFlow.technicalDescription],
+// 	[DataFlow.technicalName],
+// 	[DataFlow.version],
+// 	[DataFlow.qri],
+// 	[DataFlow.secureQri],
+// 	[DataFlow.sourceSystemId],
+// 	[DataFlow.type],
+// 	[DataFlow.appFile],
+// 	[DataFlow.appMemory],
+// 	[DataFlow.usedBy]
+// RESIDENT [DataFlow];
+// DROP TABLE [DataFlow];
+
+// LEFT JOIN ([DataFlow_temp_ed423ac8-c1b5-e84b-188d-7f00a22c]) LOAD
+// 	[Spaces.id] AS [DataFlow.spaceId]
+// RESIDENT [Spaces];
+// //DROP TABLE [Spaces];
+
+
+// RENAME TABLE [Users_temp_6db9df4d-51b9-0c82-dd40-0ed0dd46] to [Users];
+
+// RENAME TABLE [DIP_temp_42bdf863-a37f-8b6e-02f7-6dd6afa8] to [DIP];
+
+// RENAME TABLE [allotments_temp_5312e615-f214-6ca9-1cf5-403bee8c] to [allotments];
+
+// RENAME TABLE [License_temp_d2b68044-4b4e-6d38-166e-a9126752] to [License];
+
+// RENAME TABLE [Entitlement_temp_61a93ef3-6e4c-0b1f-5457-fc4786a4] to [Entitlement];
+
+// RENAME TABLE [Notes_temp_43675c95-b7f2-f59b-cc9b-44a007a7] to [Notes];
+
+// RENAME TABLE [Applications_temp_1932240e-6fac-e404-1d4e-3931d3fc] to [Applications];
+
+// RENAME TABLE [Scripts_temp_76dba5b3-2cc4-ef22-cac1-6c53e936] to [Scripts];
+
+// RENAME TABLE [Assistants_temp_b3bcfc65-9110-ff78-1e5d-85c65937] to [Assistants];
+
+// RENAME TABLE [Groups_temp_2240cba2-7604-e897-fc66-aac69a0f] to [Groups];
+
+// RENAME TABLE [Collections_temp_89255156-45f5-df5a-d178-69eb6c26] to [Collections];
+
+// RENAME TABLE [Auto_temp_7a1ade79-0547-b430-f329-80cd8a1c] to [Auto];
+
+// RENAME TABLE [AutoDC_temp_4c8a906d-6011-e2f4-9695-d46d6a1d] to [AutoDC];
+
+// RENAME TABLE [DataFiles_temp_145f3784-9a15-35df-a1c5-584734dc] to [DataFiles];
+
+// RENAME TABLE [DataCon_temp_da82b1e9-c480-b11c-db85-655a5f3b] to [DataCon];
+
+// RENAME TABLE [DataAlerts_temp_c496ed9e-c078-59ab-57d4-ce2f26fd] to [DataAlerts];
+
+// RENAME TABLE [Reloads_temp_3a5edba9-def4-59f4-fac3-ada61825] to [Reloads];
+
+// RENAME TABLE [Web_int_temp_b6bdb61e-c7ca-7d3b-2dec-7b2e1ef9] to [Web_int];
+
+// RENAME TABLE [Subscriptions_temp_50d764dd-07a7-279d-9fa9-215f53fd] to [Subscriptions];
+
+// RENAME TABLE [ExURL_temp_5c97a3fc-0a5e-3db8-f8ff-0c242af1] to [ExURL];
+
+// RENAME TABLE [AML_Dep_temp_82053cfa-c969-9603-f47a-9cca6a4f] to [AML_Dep];
+
+// RENAME TABLE [AML_Exp_temp_28b941bc-1838-bc6f-77bf-20fbcce8] to [AML_Exp];
+
+// RENAME TABLE [expda_temp_09d2922b-9d61-8524-dd9b-da2fc8ed] to [expda];
+
+// RENAME TABLE [Themes_temp_599c949f-fb64-c573-bc2e-f41c068a] to [Themes];
+
+// RENAME TABLE [Task_temp_e0a4a977-5dc4-edaf-7650-a1f2e201] to [Task];
+
+// RENAME TABLE [App_Reports_temp_c1e062a8-1df5-dbc9-b8e1-0b6b85e2] to [App_Reports];
+
+// RENAME TABLE [Webh_temp_074358c6-d8be-5347-e4d1-bdc88ad2] to [Webh];
+
+// RENAME TABLE [Api_key_temp_fb832aaf-525e-11ba-b304-c854e9b9] to [Api_key];
+
+// RENAME TABLE [Oath_temp_832bbddd-1d22-f7f8-ce94-4325ee08] to [Oath];
+
+// RENAME TABLE [Session_temp_63c111a5-9d6b-18c9-a14d-2e496e01] to [Session];
+
+// RENAME TABLE [Glossaries_temp_50c71a32-b5f6-0d97-dbc1-ee372c87] to [Glossaries];
+
+// RENAME TABLE [KB_temp_fa8b9935-cac5-ce98-297a-11b3b5ee] to [KB];
+
+// RENAME TABLE [DataFlow_temp_ed423ac8-c1b5-e84b-188d-7f00a22c] to [DataFlow];
+
+
+///$tab Joins Spaces
+// [Spaces_temp_6f6130b5-78bc-5af9-d972-f3e274de]:
+// LOAD
+// 	[Spaces.id] AS [id-spaceId],
+// 	[Spaces.type],
+// 	[Spaces.ownerId],
+// 	[Spaces.tenantId],
+// 	[Spaces.name],
+// 	[Spaces.description],
+// 	[Spaces.createdAt],
+// 	[Spaces.createdBy],
+// 	[Spaces.updatedAt]
+// RESIDENT [Spaces];
+// DROP TABLE [Spaces];
+
+// [Ext_temp_d07baa24-5223-cd27-8f05-76805fe8]:
+// LOAD
+// 	[Ext.id],
+// 	[Ext.tenantId],
+// 	[Ext.userId] AS [id-Users.id],
+// 	[Ext.name],
+// 	[Ext.type],
+// 	[Ext.qextFilename],
+// 	[Ext.qextVersion],
+// 	[Ext.loadpath],
+// 	[Ext.description],
+// 	[Ext.version],
+// 	[Ext.author],
+// 	[Ext.icon],
+// 	[Ext.preview],
+// 	[Ext.checksum],
+// 	[Ext.bundled],
+// 	[Ext.supernova],
+// 	[Ext.createdAt],
+// 	[Ext.updatedAt],
+// 	[Ext.contentType],
+// 	[Ext.contentLength],
+// 	[Ext.md5],
+// 	[Ext.fileId],
+// 	[Ext.originalname]
+// RESIDENT [Ext];
+// DROP TABLE [Ext];
+
+// [Users_temp_1d6e13b8-d906-6766-8f56-b1fc0ff5]:
+// LOAD
+// 	[-_KEY_data-unitsUsed] AS [Users.-_KEY_data-unitsUsed],
+// 	[id-Users.id],
+// 	[Users.id],
+// 	[Users.tenantId],
+// 	[Users.status],
+// 	[Users.subject],
+// 	[Users.name],
+// 	[Users.email],
+// 	[Users.picture],
+// 	[Users.createdAt],
+// 	[Users.lastUpdatedAt],
+// 	[Users.created],
+// 	[Users.lastUpdated]
+// RESIDENT [Users];
+// DROP TABLE [Users];
+
+// [allotments_temp_2d7b04b1-67be-fd68-6d9d-ab01ce96]:
+// LOAD
+// 	[-_KEY_data-unitsUsed] AS [allotments.-_KEY_data-unitsUsed],
+// 	[allotments.name],
+// 	[allotments.usageClass],
+// 	[allotments.units],
+// 	[allotments.overage]
+// RESIDENT [allotments];
+// DROP TABLE [allotments];
+
+// [Notes_temp_918425ff-6089-0e3c-dd1b-ac4d8abc]:
+// LOAD
+// 	[id-Users.id],
+// 	[Notes.title],
+// 	[Notes.spaceId] AS [id-spaceId],
+// 	[Notes.description],
+// 	[Notes.createdTime],
+// 	[Notes.lastModifiedTime],
+// 	[Notes.tenantId],
+// 	[Notes.public],
+// 	[Notes.id]
+// RESIDENT [Notes];
+// DROP TABLE [Notes];
+
+// [Applications_temp_66f7828b-8d6b-7fe0-9aaf-c9d1a57e]:
+// LOAD
+// 	[id-Users.id],
+// 	[Applications.id],
+// 	[Applications.name],
+// 	[Applications.description],
+// 	[Applications.lastReloadTime],
+// 	[Applications.createdDate],
+// 	[Applications.modifiedDate],
+// 	[Applications.dynamicColor],
+// 	[Applications.hasSectionAccess],
+// 	[Applications.isDirectQueryMode],
+// 	[Applications._resourcetype],
+// 	[Applications.originAppId],
+// 	[Applications.owner],
+// 	[Applications.Users.id],
+//     [id-Users.id] as [Applications.Usersid],
+// 	[Applications.publishTime],
+// 	[Applications.published],
+// 	[Applications.spaceId] AS [id-spaceId],
+//     [Applications.spaceId],
+// 	[Applications.thumbnail],
+// 	[Applications.usage],
+// 	[Applications.appId],
+// 	[Applications.appType],
+// 	[Applications.dataSetCount],
+// 	[Applications.dataStoreName],
+// 	[Applications.dataStoreType],
+// 	[Applications.reloadOnly],
+// 	[Applications.technicalDescription],
+// 	[Applications.technicalName],
+// 	[Applications.version],
+// 	[Applications.qri],
+// 	[Applications.secureQri],
+// 	[Applications.sourceSystemId],
+// 	[Applications.type],
+// 	[Applications.appFile],
+// 	[Applications.appMemory],
+// 	[Applications.usedBy]
+// RESIDENT [Applications];
+// DROP TABLE [Applications];
+
+// [Scripts_temp_d3ddf9ac-b14b-b640-b698-7e5e99bd]:
+// LOAD
+// 	[id-Users.id],
+// 	[Scripts.id],
+// 	[Scripts.name],
+// 	[Scripts.description],
+// 	[Scripts.lastReloadTime],
+// 	[Scripts.createdDate],
+// 	[Scripts.modifiedDate],
+// 	[Scripts.dynamicColor],
+// 	[Scripts.hasSectionAccess],
+// 	[Scripts.isDirectQueryMode],
+// 	[Scripts._resourcetype],
+// 	[Scripts.originAppId],
+// 	[Scripts.owner],
+// 	[Scripts.publishTime],
+// 	[Scripts.published],
+// 	[Scripts.spaceId] AS [id-spaceId],
+// 	[Scripts.thumbnail],
+// 	[Scripts.usage],
+// 	[Scripts.appId],
+// 	[Scripts.appType],
+// 	[Scripts.dataSetCount],
+// 	[Scripts.dataStoreName],
+// 	[Scripts.dataStoreType],
+// 	[Scripts.reloadOnly],
+// 	[Scripts.technicalDescription],
+// 	[Scripts.technicalName],
+// 	[Scripts.version],
+// 	[Scripts.qri],
+// 	[Scripts.secureQri],
+// 	[Scripts.sourceSystemId],
+// 	[Scripts.type],
+// 	[Scripts.appFile],
+// 	[Scripts.appMemory],
+// 	[Scripts.usedBy]
+// RESIDENT [Scripts];
+// DROP TABLE [Scripts];
+
+// [Assistants_temp_cf378e60-18e6-cca8-f735-3aab3fca]:
+// LOAD
+// 	[id-Users.id],
+// 	[Assistants.id],
+// 	[Assistants.name],
+// 	[Assistants.title],
+// 	[Assistants.description],
+// 	[Assistants.ownerId],
+// 	[Assistants.createdAt],
+// 	[Assistants.updatedBy],
+// 	[Assistants.updatedAt],
+// 	[Assistants.tenantId],
+// 	[Assistants.spaceId] AS [id-spaceId],
+// 	[Assistants.welcomeMessage]
+// RESIDENT [Assistants];
+// DROP TABLE [Assistants];
+
+// [Auto_temp_7c1613ef-6a5c-3b32-c15f-a220164b]:
+// LOAD
+// 	[id-Users.id],
+// 	[Auto.id],
+// 	[Auto.name],
+// 	[Auto.spaceId] AS [id-spaceId],
+// 	[Auto.state],
+// 	[Auto.duration],
+// 	[Auto.workspace],
+// 	[Auto.lastRun],
+// 	[Auto.lastRunStatus],
+// 	[Auto.runMode],
+// 	[Auto.createdAt],
+// 	[Auto.updatedAt],
+// 	[Auto.lastRunAt],
+// 	[Auto.containsBillable],
+// 	[Auto.executionToken]
+// RESIDENT [Auto];
+// DROP TABLE [Auto];
+
+// [AutoDC_temp_1cb5af84-9856-573f-5d6f-fdbdf6bb]:
+// LOAD
+// 	[id-Users.id],
+// 	[AutoDC.id],
+// 	[AutoDC.name],
+// 	[AutoDC.spaceId] AS [id-spaceId],
+// 	[AutoDC.isConnected],
+// 	[AutoDC.connectorId],
+// 	[AutoDC.createdAt],
+// 	[AutoDC.updatedAt]
+// RESIDENT [AutoDC];
+// DROP TABLE [AutoDC];
+
+// [DataCon_temp_ec361279-ba98-b4cf-9edf-84de5e3e]:
+// LOAD
+// 	[id-Users.id],
+// 	[DataCon.created],
+// 	[DataCon.datasourceID],
+// 	[DataCon.id],
+// 	[DataCon.qArchitecture],
+// 	[DataCon.qConnectStatement],
+// 	[DataCon.qCredentialsID],
+// 	[DataCon.qEngineObjectID],
+// 	[DataCon.qID],
+// 	[DataCon.qLogOn],
+// 	[DataCon.qName],
+// 	[DataCon.qSeparateCredentials],
+// 	[DataCon.qType],
+// 	[DataCon.qri],
+// 	[DataCon.tags],
+// 	[DataCon.tenant],
+// 	[DataCon.updated],
+// 	[DataCon.version],
+// 	[DataCon.space] AS [id-spaceId]
+// RESIDENT [DataCon];
+// DROP TABLE [DataCon];
+
+// [Subscriptions_temp_541b4851-d45f-82be-1f0a-49e9c347]:
+// LOAD
+// 	[id-Users.id],
+// 	[Subscriptions.appId_u2],
+// 	[Subscriptions.appName],
+// 	[Subscriptions.createdBy],
+// 	[Subscriptions.dateCreated],
+// 	[Subscriptions.description_u0],
+// 	[Subscriptions.emailContent],
+// 	[Subscriptions.enabledBySystem_u0],
+// 	[Subscriptions.id_u0],
+// 	[Subscriptions.lastExecutionDate],
+// 	[Subscriptions.lastRun],
+// 	[Subscriptions.lastUpdated],
+// 	[Subscriptions.name_u4],
+// 	[Subscriptions.ownerName],
+// 	[Subscriptions.startTime],
+// 	[Subscriptions.statusCode],
+// 	[Subscriptions.subType_u0],
+// 	[Subscriptions.tenant],
+// 	[Subscriptions.type_u1],
+// 	[Subscriptions.updatedBy],
+// 	[Subscriptions.hasCycleFields],
+// 	[Subscriptions.latestExecutionFilesURL],
+// 	[Subscriptions.latestExecutionURL],
+// 	[Subscriptions.persistentBookmarkIncludeVariables],
+// 	[Subscriptions.traceid],
+// 	[Subscriptions.distributionListId],
+// 	[Subscriptions.enabledByUser_u0],
+// 	[Subscriptions.failedExecutionsCount],
+// 	[Subscriptions.multiInsightURLs],
+// 	[Subscriptions.spaceId] AS [id-spaceId],
+// 	[Subscriptions.templateId_u0],
+// 	[Subscriptions.enabled_u1],
+// 	[Subscriptions.executeOnCreation],
+// 	[Subscriptions.insightDirectURL],
+// 	[Subscriptions.insightFallbackURL],
+// 	[Subscriptions.insightID_u0],
+// 	[Subscriptions.lastViewed],
+// 	[Subscriptions.thumbnail],
+// 	[Subscriptions.__KEY_sharingTasks],
+// 	[Subscriptions.__FK_sharingTasks]
+// RESIDENT [Subscriptions];
+// DROP TABLE [Subscriptions];
+
+// [ExURL_temp_1d3ec2c4-ad60-f59d-0a63-5414d876]:
+// LOAD
+// 	[id-Users.id],
+// 	[ExURL.id],
+// 	[ExURL.index],
+// 	[ExURL.name],
+// 	[ExURL.link],
+// 	[ExURL.spaceId] AS [id-spaceId],
+// 	[ExURL.description],
+// 	[ExURL.linkType],
+// 	[ExURL.createdDate],
+// 	[ExURL.modifiedDate]
+// RESIDENT [ExURL];
+// DROP TABLE [ExURL];
+
+// [AML_Exp_temp_3e1928fd-7ac6-b15b-a780-4d094b0f]:
+// LOAD
+// 	[id-Users.id],
+// 	[AML_Exp.id],
+// 	[AML_Exp.createdAt],
+// 	[AML_Exp.updatedAt],
+// 	[AML_Exp.tenantId],
+// 	[AML_Exp.spaceId] AS [id-spaceId],
+// 	[AML_Exp.name],
+// 	[AML_Exp.description]
+// RESIDENT [AML_Exp];
+// DROP TABLE [AML_Exp];
+
+// [expda_temp_162fbfc0-f0e8-fd2b-90cf-e4a55883]:
+// LOAD
+// 	[id-Users.id],
+// 	[expda._resourcetype],
+// 	[expda.dataExported],
+// 	[expda.dataReduced],
+// 	[expda.exportedDate],
+// 	[expda.id],
+// 	[expda.name],
+// 	[expda.owner],
+// 	[expda.spaceId] AS [id-spaceId],
+// 	[expda.usage],
+// 	[expda.__KEY_data_u0],
+// 	[expda.__KEY_data]
+// RESIDENT [expda];
+// DROP TABLE [expda];
+
+// [Task_temp_607e8601-cb90-d0bd-7901-72366104]:
+// LOAD
+// 	[id-Users.id],
+// 	[Task.id],
+// 	[Task.partial],
+// 	[Task.autoReload],
+// 	[Task.autoReloadPartial],
+// 	[Task.tenantId],
+// 	[Task.appId],
+// 	[Task.fortressId],
+// 	[Task.log],
+// 	[Task.disabledCode],
+// 	[Task.spaceId] AS [id-spaceId],
+// 	[Task.startDateTime],
+// 	[Task.state],
+// 	[Task.timeZone],
+// 	[Task.nextExecutionTime],
+// 	[Task.lastExecutionTime],
+// 	[Task.migrated]
+// RESIDENT [Task];
+// DROP TABLE [Task];
+
+// [Glossaries_temp_c6642705-283a-045e-6b84-005902f9]:
+// LOAD
+// 	[id-Users.id],
+// 	[Glossaries.id],
+// 	[Glossaries.name],
+// 	[Glossaries.description],
+// 	[Glossaries.tags],
+// 	[Glossaries.createdBy],
+// 	[Glossaries.createdAt],
+// 	[Glossaries.updatedBy],
+// 	[Glossaries.updatedAt],
+// 	[Glossaries.spaceId] AS [id-spaceId],
+// 	[Glossaries.overview],
+// 	[Glossaries.__KEY_data],
+// 	[Glossaries.__FK_data]
+// RESIDENT [Glossaries];
+// DROP TABLE [Glossaries];
+
+// [DataFlow_temp_b718e9b2-98f6-fcf3-2057-254e5520]:
+// LOAD
+// 	[id-Users.id],
+// 	[DataFlow.id],
+// 	[DataFlow.name],
+// 	[DataFlow.description],
+// 	[DataFlow.lastReloadTime],
+// 	[DataFlow.createdDate],
+// 	[DataFlow.modifiedDate],
+// 	[DataFlow.dynamicColor],
+// 	[DataFlow.hasSectionAccess],
+// 	[DataFlow.isDirectQueryMode],
+// 	[DataFlow._resourcetype],
+// 	[DataFlow.originAppId],
+// 	[DataFlow.owner],
+// 	[DataFlow.publishTime],
+// 	[DataFlow.published],
+// 	[DataFlow.spaceId] AS [id-spaceId],
+// 	[DataFlow.thumbnail],
+// 	[DataFlow.usage],
+// 	[DataFlow.appId],
+// 	[DataFlow.appType],
+// 	[DataFlow.dataSetCount],
+// 	[DataFlow.dataStoreName],
+// 	[DataFlow.dataStoreType],
+// 	[DataFlow.reloadOnly],
+// 	[DataFlow.technicalDescription],
+// 	[DataFlow.technicalName],
+// 	[DataFlow.version],
+// 	[DataFlow.qri],
+// 	[DataFlow.secureQri],
+// 	[DataFlow.sourceSystemId],
+// 	[DataFlow.type],
+// 	[DataFlow.appFile],
+// 	[DataFlow.appMemory],
+// 	[DataFlow.usedBy]
+// RESIDENT [DataFlow];
+// DROP TABLE [DataFlow];
+
+// RENAME TABLE [Spaces_temp_6f6130b5-78bc-5af9-d972-f3e274de] to [Spaces];
+
+// RENAME TABLE [Ext_temp_d07baa24-5223-cd27-8f05-76805fe8] to [Ext];
+
+// RENAME TABLE [Users_temp_1d6e13b8-d906-6766-8f56-b1fc0ff5] to [Users];
+
+// RENAME TABLE [allotments_temp_2d7b04b1-67be-fd68-6d9d-ab01ce96] to [allotments];
+
+// RENAME TABLE [Notes_temp_918425ff-6089-0e3c-dd1b-ac4d8abc] to [Notes];
+
+// RENAME TABLE [Applications_temp_66f7828b-8d6b-7fe0-9aaf-c9d1a57e] to [Applications];
+
+// RENAME TABLE [Scripts_temp_d3ddf9ac-b14b-b640-b698-7e5e99bd] to [Scripts];
+
+// RENAME TABLE [Assistants_temp_cf378e60-18e6-cca8-f735-3aab3fca] to [Assistants];
+
+// RENAME TABLE [Auto_temp_7c1613ef-6a5c-3b32-c15f-a220164b] to [Auto];
+
+// RENAME TABLE [AutoDC_temp_1cb5af84-9856-573f-5d6f-fdbdf6bb] to [AutoDC];
+
+// RENAME TABLE [DataCon_temp_ec361279-ba98-b4cf-9edf-84de5e3e] to [DataCon];
+
+// RENAME TABLE [Subscriptions_temp_541b4851-d45f-82be-1f0a-49e9c347] to [Subscriptions];
+
+// RENAME TABLE [ExURL_temp_1d3ec2c4-ad60-f59d-0a63-5414d876] to [ExURL];
+
+// RENAME TABLE [AML_Exp_temp_3e1928fd-7ac6-b15b-a780-4d094b0f] to [AML_Exp];
+
+// RENAME TABLE [expda_temp_162fbfc0-f0e8-fd2b-90cf-e4a55883] to [expda];
+
+// RENAME TABLE [Task_temp_607e8601-cb90-d0bd-7901-72366104] to [Task];
+
+// RENAME TABLE [Glossaries_temp_c6642705-283a-045e-6b84-005902f9] to [Glossaries];
+
+// RENAME TABLE [DataFlow_temp_b718e9b2-98f6-fcf3-2057-254e5520] to [DataFlow];
+
+
+// [autoCalendar]: 
+//   DECLARE FIELD DEFINITION Tagged ('$date')
+// FIELDS
+//   Dual(Year($1), YearStart($1)) AS [Year] Tagged ('$axis', '$year'),
+//   Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00)) AS [Quarter] Tagged ('$quarter', '$cyclic'),
+//   Dual(Year($1)&'-Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [YearQuarter] Tagged ('$yearquarter', '$qualified'),
+//   Dual('Q'&Num(Ceil(Num(Month($1))/3)),QuarterStart($1)) AS [_YearQuarter] Tagged ('$yearquarter', '$hidden', '$simplified'),
+//   Month($1) AS [Month] Tagged ('$month', '$cyclic'),
+//   Dual(Year($1)&'-'&Month($1), monthstart($1)) AS [YearMonth] Tagged ('$axis', '$yearmonth', '$qualified'),
+//   Dual(Month($1), monthstart($1)) AS [_YearMonth] Tagged ('$axis', '$yearmonth', '$simplified', '$hidden'),
+//   Dual('W'&Num(Week($1),00), Num(Week($1),00)) AS [Week] Tagged ('$weeknumber', '$cyclic'),
+//   Date(Floor($1)) AS [Date] Tagged ('$axis', '$date', '$qualified'),
+//   Date(Floor($1), 'D') AS [_Date] Tagged ('$axis', '$date', '$hidden', '$simplified'),
+//   If (DayNumberOfYear($1) <= DayNumberOfYear(Today()), 1, 0) AS [InYTD] ,
+//   Year(Today())-Year($1) AS [YearsAgo] ,
+//   If (DayNumberOfQuarter($1) <= DayNumberOfQuarter(Today()),1,0) AS [InQTD] ,
+//   4*Year(Today())+Ceil(Month(Today())/3)-4*Year($1)-Ceil(Month($1)/3) AS [QuartersAgo] ,
+//   Ceil(Month(Today())/3)-Ceil(Month($1)/3) AS [QuarterRelNo] ,
+//   If(Day($1)<=Day(Today()),1,0) AS [InMTD] ,
+//   12*Year(Today())+Month(Today())-12*Year($1)-Month($1) AS [MonthsAgo] ,
+//   Month(Today())-Month($1) AS [MonthRelNo] ,
+//   If(WeekDay($1)<=WeekDay(Today()),1,0) AS [InWTD] ,
+//   (WeekStart(Today())-WeekStart($1))/7 AS [WeeksAgo] ,
+//   Week(Today())-Week($1) AS [WeekRelNo] ;
+
+// DERIVE FIELDS FROM FIELDS [Spaces.createdAt], [Spaces.updatedAt], [Roles.createdAt], [Roles.lastUpdatedAt], [Ext.createdAt], [Ext.updatedAt], [CSP.createdDate], [CSP.modifiedDate], [IDP.lastUpdated], [Users.createdAt], [Users.lastUpdatedAt], [Users.created], [Users.lastUpdated], [License.changeTime], [License.latestValidTime], [Entitlement.periodEnd], [Entitlement.periodStart], [Entitlement.updateTime], [Notes.createdTime], [Notes.lastModifiedTime], [Applications.lastReloadTime], [Applications.createdDate], [Applications.modifiedDate], [Applications.publishTime], [Scripts.lastReloadTime], [Scripts.createdDate], [Scripts.modifiedDate], [Assistants.createdAt], [Assistants.updatedAt], [Groups.createdAt], [Groups.lastUpdatedAt], [Collections.createdAt], [Collections.updatedAt], [Auto.createdAt], [Auto.updatedAt], [Auto.lastRunAt], [AutoDC.createdAt], [AutoDC.updatedAt], [DataFiles.createdDate], [DataFiles.modifiedDate], [DataCon.created], [DataCon.updated], [DataAlerts.absoluteLastScan], [DataAlerts.absoluteLastTrigger], [DataAlerts.dateCreated], [DataAlerts.lastScan], [DataAlerts.lastTrigger], [DataAlerts.lastUpdated], [Reloads.creationTime], [Reloads.startTime], [Reloads.endTime], [Reloads.engineTime], [Web_int.created], [Web_int.lastUpdated], [Subscriptions.dateCreated], [Subscriptions.lastExecutionDate], [Subscriptions.lastRun], [Subscriptions.lastUpdated], [Subscriptions.startTime], [Subscriptions.lastViewed], [ExURL.createdDate], [ExURL.modifiedDate], [AML_Exp.createdAt], [AML_Exp.updatedAt], [expda.exportedDate], [Themes.createdAt], [Themes.updatedAt], [Task.startDateTime], [Task.nextExecutionTime], [Task.lastExecutionTime], [App_Reports.createdAt], [App_Reports.updatedAt], [Webh.createdAt], [Webh.updatedAt], [Api_key.expiry], [Oath.createdAt], [Oath.updatedAt], [Session.eventTime], [Glossaries.createdAt], [Glossaries.updatedAt], [KB.createdAt], [KB.updatedAt], [KB.lastIndexedAt], [DataFlow.lastReloadTime], [DataFlow.createdDate], [DataFlow.modifiedDate] USING [autoCalendar] ;
+///$tab Distribution List
+Replace LOAD
+    "Name" AS [DL_DISTRIBUTION_RECIPIENT_NAME],
+    "Email" AS [DL_DISTRIBUTION_EMAIL],
+    SubField([Filters],',') AS [DL_DISTRIBUTION_FILTERS],
+    SubField([Groups],',') AS [DL_DISTRIBUTION_GROUP_NAMES]
+FROM "lib://:DataFiles/SampleFile.xlsx"
+(ooxml, embedded labels, table is DL_DISTRIBUTION_SVC_USERS_QCS);
+
+TempGroups:
+  REPLACE LOAD
+      *
+    FROM "lib://:DataFiles/SampleFile.xlsx"
+    (ooxml, embedded labels, table is DL_DISTRIBUTION_SVC_GROUPS_QCS);
+
+let vEnabledFieldNo = FieldNumber('Enabled', 'TempGroups');
+
+if (vEnabledFieldNo > 0) then
+    DL_DISTRIBUTION_SVC_GROUPS_QCS:
+    REPLACE LOAD
+        "Name" AS [DL_DISTRIBUTION_GROUP_NAMES],
+        "Description" AS [DL_DISTRIBUTION_GROUP_DESCRIPTION],
+        "Enabled" AS [DL_DISTRIBUTION_GROUP_ENABLED]
+    Resident TempGroups;
+else
+
+    DL_DISTRIBUTION_SVC_GROUPS_QCS:
+    REPLACE LOAD
+        "Name" AS [DL_DISTRIBUTION_GROUP_NAMES],
+        "Description" AS [DL_DISTRIBUTION_GROUP_DESCRIPTION],
+        1 AS [DL_DISTRIBUTION_GROUP_ENABLED]
+    Resident TempGroups;
+end if
+
+Drop Table TempGroups;
+
+tag field DL_DISTRIBUTION_RECIPIENT_NAME with 'DL_DISTRIBUTION_SVC__recipientName';
+tag field DL_DISTRIBUTION_EMAIL with 'DL_DISTRIBUTION_SVC__recipientEmail';
+tag field DL_DISTRIBUTION_FILTERS with 'DL_DISTRIBUTION_SVC__recipientFilters';
+tag field DL_DISTRIBUTION_GROUP_NAMES with 'DL_DISTRIBUTION_SVC__groupsName';
+tag field DL_DISTRIBUTION_GROUP_DESCRIPTION with 'DL_DISTRIBUTION_SVC__groupDescription';
+tag field DL_DISTRIBUTION_GROUP_ENABLED with 'DL_DISTRIBUTION_SVC__groupEnabled';
